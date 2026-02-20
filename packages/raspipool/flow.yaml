@@ -67,10 +67,11 @@ automation:
     entity_id: input_number.notify_cycles
     above: 0
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: "in low speed: {{ states('sensor.cummulated_flow_low') }}{{'\n'}}in high speed: {{ states('sensor.cummulated_flow_high') }}{{'\n'}}@{{now().strftime('%H:%M')}}[{{now().day}}/{{now().month}}]"
-      title: "Flow: {{ states('input_number.notify_cycles') | int(0) }} cycles reached!!!"
+      title: "Filtration: {{ states('input_number.notify_cycles') | int(0) }} cycles atteints!!!"
+      message: "Vitesse basse: {{ states('sensor.cummulated_flow_low') }}{{ '\n' }}Vitesse haute: {{ states('sensor.cummulated_flow_high') }}{{ '\n' }}@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_flow_cycles"
 
 - alias: reset_cummulated_flow_start
   id: '1559293506609'

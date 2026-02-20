@@ -51,11 +51,11 @@ automation:
       hours: 48
   condition: []
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: '{{trigger.to_state.attributes.friendly_name}}: {{trigger.to_state.state}}{{-
-        "\n\n" -}}@{{now().strftime("%H:%M")}}[{{now().day}}/{{now().month}}]'
-      title: 'pH high ({{trigger.to_state.state}})!!!'
+      title: 'pH high ({{ trigger.to_state.state }})!!!'
+      message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
+      notification_id: "pool_ph_high"
 
 - alias: ph_low
   id: '1559049839760'
@@ -68,11 +68,11 @@ automation:
       hours: 48
   condition: []
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: '{{trigger.to_state.attributes.friendly_name}}: {{trigger.to_state.state}}{{-
-        "\n\n" -}}@{{now().strftime("%H:%M")}}[{{now().day}}/{{now().month}}]'
-      title: 'pH low ({{trigger.to_state.state}})!!!'
+      title: 'pH low ({{ trigger.to_state.state }})!!!'
+      message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
+      notification_id: "pool_ph_low"
 
 - alias: ph_bad
   id: '1559049893756'
@@ -82,11 +82,11 @@ automation:
     value_template: '{{state_attr("sensor.ph_mean", "standard_deviation") > 0.1}}'
   condition: []
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: '{{trigger.to_state.attributes.friendly_name}}: {{trigger.to_state.state}}{{-
-        "\n\n" -}}@{{now().strftime("%H:%M")}}[{{now().day}}/{{now().month}}]'
       title: 'pH probe bad (calibrate?) !!!'
+      message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
+      notification_id: "pool_ph_probe_bad"
   - service: automation.turn_off
     entity_id: automation.ph_bad
 

@@ -14,6 +14,7 @@ switch:
 
 input_boolean:
   lock_bleach:
+    name: "Verrouillage électrolyseur"
     initial: off
     icon: mdi:lock
   lock_muriatic:
@@ -23,14 +24,14 @@ input_boolean:
 
 template:
   - binary_sensor:
-      - name: "Bleach"
+      - name: "Électrolyseur"
         device_class: plug
         state: "{{ is_state('switch.orp', 'on') }}"
         icon: >-
           {% if is_state('input_boolean.lock_bleach', 'on') %}
             mdi:lock
           {% else %}
-            mdi:power-plug
+            mdi:lightning-bolt
           {% endif %}
       - name: "Muriatic"
         device_class: plug

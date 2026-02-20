@@ -42,11 +42,11 @@ automation:
       hours: 48
   condition: []
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: '{{trigger.to_state.attributes.friendly_name}}: {{trigger.to_state.state}}{{-
-        "\n\n" -}}@{{now().strftime("%H:%M")}}[{{now().day}}/{{now().month}}]'
-      title: 'temperature low ({{trigger.to_state.state}})!!!'
+      title: 'Température basse ({{ trigger.to_state.state }})!!!'
+      message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
+      notification_id: "pool_temp_low"
 
 - alias: temp_high
   id: '1559049959765'
@@ -59,9 +59,9 @@ automation:
       hours: 48
   condition: []
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: '{{trigger.to_state.attributes.friendly_name}}: {{trigger.to_state.state}}{{-
-        "\n\n" -}}@{{now().strftime("%H:%M")}}[{{now().day}}/{{now().month}}]'
-      title: 'temperature high ({{trigger.to_state.state}})!!!'
+      title: 'Température haute ({{ trigger.to_state.state }})!!!'
+      message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
+      notification_id: "pool_temp_high"
 

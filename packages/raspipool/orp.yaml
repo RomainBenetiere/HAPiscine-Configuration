@@ -40,10 +40,11 @@ automation:
     value_template: '{{state_attr("sensor.orp_mean", "standard_deviation") > 20 }}'
   condition: []
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: 'Between {{state_attr("sensor.orp_mean", "min_value")}} and {{state_attr("sensor.orp_mean", "max_value")}}{{- "\n\n" -}}@{{now().strftime("%H:%M")}}[{{now().day}}/{{now().month}}]'
       title: 'ORP probe bad (calibrate?) !!!'
+      message: 'Between {{ state_attr("sensor.orp_mean", "min_value") }} and {{ state_attr("sensor.orp_mean", "max_value") }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
+      notification_id: "pool_orp_probe_bad"
   - service: automation.turn_off
     entity_id: automation.orp_bad
 

@@ -13,7 +13,6 @@ recorder:
       - sensor.ezo_orp
       - sensor.remain_cycles
       - input_number.muriatic_tank
-      - input_number.bleach_tank
       - input_number.muriatic_inject
       - input_number.bleach_inject
       - sensor.openweathermap_condition

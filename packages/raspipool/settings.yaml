@@ -67,10 +67,6 @@ automation:
       value: 4
   - service: input_number.set_value
     data:
-      entity_id: input_number.bleach_tank
-      value: 20
-  - service: input_number.set_value
-    data:
       entity_id: input_number.bleach_concentration
       value: 5
   - service: input_number.set_value

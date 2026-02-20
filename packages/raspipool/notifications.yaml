@@ -1,8 +1,3 @@
-#notify:
-#  - platform: pushbullet
-#    api_key: !secret pushbullet_api_key
-#    name: pushbullet
-
 input_boolean:
   notify_seasson:
     name: Notify seasson changes
@@ -25,10 +20,11 @@ automation:
     entity_id: input_boolean.notify_seasson
     state: 'on'
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: "@{{now().strftime('%H:%M')}}[{{now().day}}/{{now().month}}]"
       title: 'Winter is comming!!!'
+      message: "@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_winter_session"
 
 - alias: summer_session
   id: '1559049956785'
@@ -44,8 +40,9 @@ automation:
     entity_id: input_boolean.notify_seasson
     state: 'on'
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: "@{{now().strftime('%H:%M')}}[{{now().day}}/{{now().month}}]"
       title: "Summer is here!!!"
+      message: "@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_summer_session"
 

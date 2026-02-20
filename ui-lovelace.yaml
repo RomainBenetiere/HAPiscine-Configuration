@@ -87,15 +87,6 @@ views:
                   red: 1
                   yellow: 3
                 type: gauge
-              - max: 15
-                min: 0
-                theme: default
-                entity: sensor.bleach_tank
-                severity:
-                  green: 8
-                  red: 0
-                  yellow: 3
-                type: gauge
           - show_name: true
             entities:
               - entity: switch.pump
@@ -136,7 +127,7 @@ views:
             entities:
               - entity: sensor.pump_state
               - entity: switch.orp
-                name: Bleach inj.
+                name: Électrolyseur
               - entity: switch.ph
                 name: Muriatic inj.
               - entity: sensor.ph_mean
@@ -151,7 +142,7 @@ views:
             entities:
               - entity: sensor.pump_state
               - entity: switch.orp
-                name: Bleach inj.
+                name: Électrolyseur
               - entity: switch.ph
                 name: Muriatic inj.
               - entity: sensor.ph_mean
@@ -186,19 +177,17 @@ views:
             type: entities
             show_header_toggle: false
           - entities:
-              - label: Bleach ( + ORP )
+              - label: Électrolyseur au sel (ORP)
                 type: section
-              - entity: input_number.bleach_tank
-                name: Tank level
               - entity: input_number.bleach_concentration
-                name: Concentration
+                name: Rendement cellule (%)
               - entity: input_number.bleach_speed
-                name: Speed injection
+                name: Débit production (ml/min)
               - entity: switch.orp
-                name: Pump injection
+                name: Cellule en marche
                 secondary_info: last-changed
               - entity: input_boolean.lock_bleach
-                name: Lock Pump
+                name: Verrouiller électrolyseur
             type: entities
             show_header_toggle: false
   - badges: []
@@ -212,7 +201,6 @@ views:
           - entity: input_boolean.notify_seasson
           - entity: input_number.notify_muriatic_high
           - entity: input_number.notify_muriatic_tank
-          - entity: input_number.notify_bleach_tank
           - entity: input_number.notify_bleach_high
         type: entities
         show_header_toggle: true
@@ -243,16 +231,16 @@ views:
         theme: default
       - title: Chemical settings
         entities:
-          - label: Free Chlorine (FC)
+          - label: Désinfection (électrolyseur au sel)
             type: section
           - entity: input_number.fc_target
-            name: FC target
+            name: Cible désinfection (ppm)
           - entity: sensor.e_fc
-            name: FC actual
+            name: Désinfection actuelle (ppm)
           - entity: input_number.bleach_inject
-            name: Next bleach injection (ml)
+            name: Prochaine production (ml équiv.)
           - entity: input_number.e_fc_adjust
-            name: Adjust ±% FC-ORP
+            name: Ajustement ±% désinfection
           - label: pH
             type: section
           - entity: input_number.ph_target

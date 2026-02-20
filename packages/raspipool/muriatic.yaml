@@ -82,10 +82,11 @@ automation:
     value_template: "{% if states('input_number.notify_muriatic_tank') | int(0) > 0 and states('sensor.muriatic_tank') | float(0) < states('input_number.notify_muriatic_tank') | float(0) %}true{% endif %}"
   condition: []
   action:
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: "@{{now().strftime('%H:%M')}}[{{now().day}}/{{now().month}}]"
-      title: "Muriatic tank low ({{ states('input_number.muriatic_tank') | float(0) }} liters )!!!"
+      title: "Cuve acide basse ({{ states('input_number.muriatic_tank') | float(0) }} L)!!!"
+      message: "@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_muriatic_tank_low"
 
 - alias: muriatic_high
   id: '1559049844489'
@@ -99,10 +100,11 @@ automation:
     service: switch.turn_off
   - entity_id: input_boolean.lock_muriatic
     service: input_boolean.turn_on
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: "{{now().strftime('%H:%M')}}[{{now().day}}/{{now().month}}]"
-      title: "Muriatic inject blocked ({{ states('input_number.notify_muriatic_high') }} in 48 hours)!!!"
+      title: "Injection acide bloquée ({{ states('input_number.notify_muriatic_high') }} L/48h max)!!!"
+      message: "{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_muriatic_blocked"
 
 - alias: muriatic_set
   id: '1559049844459'
@@ -131,15 +133,17 @@ automation:
     below: 100.0
   - entity_id: switch.ph
     service: switch.turn_on
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: "{{now().strftime('%H:%M')}}[{{now().day}}/{{now().month}}]"
-      title: "Muriatic injection: ({{ states('input_number.muriatic_inject') }} ml)!!!"
+      title: "Injection acide: ({{ states('input_number.muriatic_inject') }} ml)!!!"
+      message: "{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_muriatic_inject_start"
   - delay: 00:00:{{ [0, 60 * states('input_number.muriatic_inject') | float(0) / states('input_number.muriatic_speed') | float(0)] | max | int(0) }}
   - entity_id: switch.ph
     service: switch.turn_off
-  - service: notify.pushbullet
+  - service: persistent_notification.create
     data:
-      message: "{{now().strftime('%H:%M')}}[{{now().day}}/{{now().month}}]"
-      title: "Muriatic injection end!!!"
+      title: "Fin injection acide!!!"
+      message: "{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_muriatic_inject_end"
 
