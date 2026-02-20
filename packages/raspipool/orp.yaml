@@ -1,0 +1,50 @@
+sensor:
+  - platform: statistics
+    name: orp_mean
+    entity_id: sensor.ezo_orp
+    state_characteristic: mean
+    max_age:
+      minutes: 10
+    precision: 0
+
+  - platform: atlas_scientific
+# For serial ports use:
+#   port: /dev/ttyUSB0
+# For I2C enter the hex device id
+    name: ezo_hw_orp
+    port: 0x62
+    offset: -20
+    scan_interval: 60
+
+automation:
+- alias: orp_start
+  id: '1559639825764'
+  initial_state: true
+  trigger:
+  - platform: state
+    entity_id: switch.orp
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: switch.pump
+    state: 'off'
+  action:
+  - service: switch.turn_off
+    entity_id: switch.orp
+
+- alias: orp_bad
+  id: '1559149493756'
+  initial_state: true
+  trigger:
+  - platform: template
+    value_template: '{{state_attr("sensor.orp_mean", "standard_deviation") > 20 }}'
+  condition: []
+  action:
+  - service: notify.pushbullet
+    data:
+      message: 'Between {{state_attr("sensor.orp_mean", "min_value")}} and {{state_attr("sensor.orp_mean", "max_value")}}{{- "\n\n" -}}@{{now().strftime("%H:%M")}}[{{now().day}}/{{now().month}}]'
+      title: 'ORP probe bad (calibrate?) !!!'
+  - service: automation.turn_off
+    entity_id: automation.orp_bad
+
+

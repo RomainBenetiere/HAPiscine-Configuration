@@ -1,0 +1,30 @@
+esphome:
+  name: commande-pompe-ph-orp
+  friendly_name: Commande_Pompe_pH_ORP
+
+rp2040:
+  board: rpipicow
+  framework:
+    # Required until https://github.com/platformio/platform-raspberrypi/pull/36 is merged
+    platform_version: https://github.com/maxgerhardt/platform-raspberrypi.git
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "B7zzA0sgnyppTbNoBzeyJUmHDwyTouXNJeoTcpYCt4s="
+
+ota:
+  password: "2dd635dc7ce65c1abe81555ecc7ad17d"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Commande-Pompe-Ph-Orp"
+    password: "L6IbxU6zRWpN"
+    

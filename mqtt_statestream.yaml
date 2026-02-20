@@ -1,0 +1,13 @@
+base_topic: ha/piscine
+publish_attributes: true         # ok
+publish_timestamps: true         # optionnel, si tu veux aussi publier les timestamps
+include:
+  entities:
+    - sensor.pump_state
+    - switch.pump
+    - switch.turbo
+    - sensor.ezo_temperature
+    - sensor.ezo_ph
+    - sensor.ezo_orp
+    - switch.ph
+    - switch.orp

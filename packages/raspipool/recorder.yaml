@@ -1,0 +1,28 @@
+
+
+recorder:
+  purge_keep_days: 10
+  include:
+    entities:
+      - sensor.pump_state
+      - sensor.ezo_temperature
+      - sensor.orp_mean
+      - sensor.ph_mean
+      - sensor.pool_water_temperature
+      - sensor.ezo_ph
+      - sensor.ezo_orp
+      - sensor.remain_cycles
+      - input_number.muriatic_tank
+      - input_number.bleach_tank
+      - input_number.muriatic_inject
+      - input_number.bleach_inject
+      - sensor.openweathermap_condition
+      - sensor.openweathermap_temperature
+      - switch.ph
+      - switch.orp
+      - sensor.e_fc
+      - input_number.cycle
+      - sensor.cycle_pool
+      - sensor.net_power
+      - sensor.net_power_mean
+

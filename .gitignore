@@ -1,0 +1,21 @@
+#*
+!*.yaml
+!*.yml
+!*.md
+!*.json
+!*.py
+!.gitignore
+
+# secrets & fichiers internes
+secrets.yaml
+home-assistant_v2.db
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
+home-assistant.log
+home-assistant.log.*
+.storage
+.cloud
+.google.token
+ip_bans.yaml
+known_devices.yaml
+.shopping_list.json

@@ -1,0 +1,260 @@
+input_boolean:
+  simulation_mode:
+    name: Simulation mode
+    icon: mdi:flask-outline
+  sim_pump:
+    name: Sim Pump
+  sim_turbo:
+    name: Sim Turbo
+  sim_ph_pump:
+    name: Sim pH Pump
+  sim_orp_pump:
+    name: Sim ORP Pump
+  sim_flowd:
+    name: Sim FlowD
+
+input_number:
+  sim_ph:
+    name: Sim pH
+    min: 0
+    max: 14
+    step: 0.01
+    unit_of_measurement: "pH"
+  sim_orp:
+    name: Sim ORP
+    min: -2000
+    max: 2000
+    step: 1
+    unit_of_measurement: "mV"
+  sim_temperature:
+    name: Sim Temperature
+    min: 0
+    max: 50
+    step: 0.1
+    unit_of_measurement: "C"
+  sim_power_consumption:
+    name: Sim Power Consumption
+    min: 0
+    max: 10000
+    step: 1
+    unit_of_measurement: "W"
+  sim_power_production:
+    name: Sim Power Production
+    min: 0
+    max: 10000
+    step: 1
+    unit_of_measurement: "W"
+  sim_outdoor_temperature:
+    name: Sim Outdoor Temperature
+    min: -20
+    max: 50
+    step: 0.1
+    unit_of_measurement: "C"
+
+template:
+  - sensor:
+      - name: "Outdoor temperature"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_outdoor_temperature') | float(0) }}
+          {% else %}
+            {{ states('sensor.openweathermap_temperature') | float(0) }}
+          {% endif %}
+        availability: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_outdoor_temperature') not in ['unknown', 'unavailable', 'none'] }}
+          {% else %}
+            {{ states('sensor.openweathermap_temperature') not in ['unknown', 'unavailable', 'none'] }}
+          {% endif %}
+        unit_of_measurement: "C"
+      - name: "Ezo ph"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_ph') | float(0) }}
+          {% else %}
+            {{ states('sensor.ezo_hw_ph') | float(0) }}
+          {% endif %}
+        availability: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_ph') not in ['unknown', 'unavailable', 'none'] }}
+          {% else %}
+            {{ states('sensor.ezo_hw_ph') not in ['unknown', 'unavailable', 'none'] }}
+          {% endif %}
+        unit_of_measurement: "pH"
+      - name: "Ezo orp"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_orp') | float(0) }}
+          {% else %}
+            {{ states('sensor.ezo_hw_orp') | float(0) }}
+          {% endif %}
+        availability: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_orp') not in ['unknown', 'unavailable', 'none'] }}
+          {% else %}
+            {{ states('sensor.ezo_hw_orp') not in ['unknown', 'unavailable', 'none'] }}
+          {% endif %}
+        unit_of_measurement: "mV"
+      - name: "Ezo temperature"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_temperature') | float(0) }}
+          {% else %}
+            {{ states('sensor.ezo_hw_temperature') | float(0) }}
+          {% endif %}
+        availability: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_temperature') not in ['unknown', 'unavailable', 'none'] }}
+          {% else %}
+            {{ states('sensor.ezo_hw_temperature') not in ['unknown', 'unavailable', 'none'] }}
+          {% endif %}
+        unit_of_measurement: "C"
+  - binary_sensor:
+      - name: "FlowD"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ is_state('input_boolean.sim_flowd', 'on') }}
+          {% else %}
+            {{ is_state('binary_sensor.flowd_hw', 'on') }}
+          {% endif %}
+  - switch:
+      - name: "Pump"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ is_state('input_boolean.sim_pump', 'on') }}
+          {% else %}
+            {{ is_state('switch.pump_hw', 'on') }}
+          {% endif %}
+        turn_on:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: input_boolean.sim_pump
+            default:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.pump_hw
+        turn_off:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_off
+                    target:
+                      entity_id: input_boolean.sim_pump
+            default:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.pump_hw
+      - name: "Turbo"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ is_state('input_boolean.sim_turbo', 'on') }}
+          {% else %}
+            {{ is_state('switch.turbo_hw', 'on') }}
+          {% endif %}
+        turn_on:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: input_boolean.sim_turbo
+            default:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.turbo_hw
+        turn_off:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_off
+                    target:
+                      entity_id: input_boolean.sim_turbo
+            default:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.turbo_hw
+      - name: "ph"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ is_state('input_boolean.sim_ph_pump', 'on') }}
+          {% else %}
+            {{ is_state('switch.ph_hw', 'on') }}
+          {% endif %}
+        turn_on:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: input_boolean.sim_ph_pump
+            default:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.ph_hw
+        turn_off:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_off
+                    target:
+                      entity_id: input_boolean.sim_ph_pump
+            default:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.ph_hw
+      - name: "orp"
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ is_state('input_boolean.sim_orp_pump', 'on') }}
+          {% else %}
+            {{ is_state('switch.orp_hw', 'on') }}
+          {% endif %}
+        turn_on:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: input_boolean.sim_orp_pump
+            default:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.orp_hw
+        turn_off:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_off
+                    target:
+                      entity_id: input_boolean.sim_orp_pump
+            default:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.orp_hw

@@ -1,0 +1,51 @@
+# Part of raspipool project @ github (by segalion at gmail)
+
+switch:
+  - platform: rpi_gpio
+    ports:
+# gpio_in_BCM_number: name
+# example=> pin#35 = 'gpio.24' = rpi24 = BCM_19 => 19: pump
+# execute 'gpio readall' to see all gpios an theis states in console
+      27: Pump HW
+      17: Turbo HW
+      21: ph hw
+      20: orp hw
+    invert_logic: true
+
+input_boolean:
+  lock_bleach:
+    initial: off
+    icon: mdi:lock
+  lock_muriatic:
+    initial: off
+    icon: mdi:lock
+
+
+template:
+  - binary_sensor:
+      - name: "Bleach"
+        device_class: plug
+        state: "{{ is_state('switch.orp', 'on') }}"
+        icon: >-
+          {% if is_state('input_boolean.lock_bleach', 'on') %}
+            mdi:lock
+          {% else %}
+            mdi:power-plug
+          {% endif %}
+      - name: "Muriatic"
+        device_class: plug
+        state: "{{ is_state('switch.ph', 'on') }}"
+        icon: >-
+          {% if is_state('input_boolean.lock_muriatic', 'on') %}
+            mdi:lock
+          {% else %}
+            mdi:power-plug
+          {% endif %}
+
+binary_sensor:
+  - platform: rpi_gpio
+    ports:
+      23: FlowD HW
+    invert_logic: true
+    pull_mode: "UP"
+

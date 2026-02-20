@@ -1,0 +1,28 @@
+esphome:
+  name: suivipacrpi
+  friendly_name: SuiviPacRPI
+
+rp2040:
+  board: rpipicow
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "KNhhRzEhw0jjjn9XLAJTE6hssts1VC0+8AHW7Z4bloQ="
+
+ota:
+  - platform: esphome
+    password: "c11358d103e921e39b00a8ca425ac967"
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot in case wifi connection fails
+  ap:
+    ssid: "Suivipacrpi Fallback Hotspot"
+    password: "3VTwDU8qx8Ef"
+    
