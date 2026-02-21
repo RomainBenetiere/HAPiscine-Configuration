@@ -22,9 +22,10 @@ input_boolean:
     icon: mdi:lock
 
 
+# entity_id doit rester binary_sensor.bleach (dérivé du name). Renommer en "Électrolyseur" dans Paramètres > Entités si besoin.
 template:
   - binary_sensor:
-      - name: "Électrolyseur"
+      - name: "Bleach"
         device_class: plug
         state: "{{ is_state('switch.orp', 'on') }}"
         icon: >-

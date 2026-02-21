@@ -1,6 +1,7 @@
+# entity_id doit rester sensor.e_fc (dérivé du name). Renommer l'affichage dans Paramètres > Entités si besoin.
 template:
   - sensor:
-      - name: "Désinfection (équiv. ppm)"
+      - name: "E FC"
         state: >-
           {{ ( 0.23 * (1 + states('input_number.e_fc_adjust') | float(0) / 100 ) *
             (14 - states('sensor.ph_mean') | float(0)) ** (1 / (400 - states('sensor.orp_mean') | float(0))) *
