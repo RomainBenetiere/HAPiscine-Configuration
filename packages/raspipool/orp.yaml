@@ -1,6 +1,7 @@
 sensor:
   - platform: statistics
     name: orp_mean
+    unique_id: raspipool_orp_mean
     entity_id: sensor.ezo_orp
     state_characteristic: mean
     max_age:

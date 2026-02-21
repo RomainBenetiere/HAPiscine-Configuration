@@ -5,7 +5,7 @@ input_boolean:
   sim_pump:
     name: Sim Pump
   sim_turbo:
-    name: Sim Turbo
+    name: Sim Robot
   sim_ph_pump:
     name: Sim pH Pump
   sim_orp_pump:
@@ -54,6 +54,7 @@ input_number:
 template:
   - sensor:
       - name: "Outdoor temperature"
+        unique_id: raspipool_outdoor_temperature
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ states('input_number.sim_outdoor_temperature') | float(0) }}
@@ -68,6 +69,7 @@ template:
           {% endif %}
         unit_of_measurement: "C"
       - name: "Ezo ph"
+        unique_id: raspipool_ezo_ph
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ states('input_number.sim_ph') | float(0) }}
@@ -82,6 +84,7 @@ template:
           {% endif %}
         unit_of_measurement: "pH"
       - name: "Ezo orp"
+        unique_id: raspipool_ezo_orp
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ states('input_number.sim_orp') | float(0) }}
@@ -96,6 +99,7 @@ template:
           {% endif %}
         unit_of_measurement: "mV"
       - name: "Ezo temperature"
+        unique_id: raspipool_ezo_temperature
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ states('input_number.sim_temperature') | float(0) }}
@@ -111,6 +115,7 @@ template:
         unit_of_measurement: "C"
   - binary_sensor:
       - name: "FlowD"
+        unique_id: raspipool_flowd
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ is_state('input_boolean.sim_flowd', 'on') }}
@@ -119,6 +124,7 @@ template:
           {% endif %}
   - switch:
       - name: "Pump"
+        unique_id: raspipool_switch_pump
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ is_state('input_boolean.sim_pump', 'on') }}
@@ -153,7 +159,9 @@ template:
               - service: switch.turn_off
                 target:
                   entity_id: switch.pump_hw
+      # Robot de nettoyage (entity_id switch.turbo pour compatibilité)
       - name: "Turbo"
+        unique_id: raspipool_switch_turbo
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ is_state('input_boolean.sim_turbo', 'on') }}
@@ -189,6 +197,7 @@ template:
                 target:
                   entity_id: switch.turbo_hw
       - name: "ph"
+        unique_id: raspipool_switch_ph
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ is_state('input_boolean.sim_ph_pump', 'on') }}
@@ -224,6 +233,7 @@ template:
                 target:
                   entity_id: switch.ph_hw
       - name: "orp"
+        unique_id: raspipool_switch_orp
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ is_state('input_boolean.sim_orp_pump', 'on') }}

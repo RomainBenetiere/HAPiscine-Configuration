@@ -24,18 +24,18 @@ input_number:
     unit_of_measurement: stars
     icon: mdi:star
   turbo:
-    name: '% in high speed'
+    name: "% du cycle avec robot"
     min: 0
     max: 100
     step: 5
     unit_of_measurement: '%'
-    icon: mdi:circle-slice-2
+    icon: mdi:robot-vacuum
 
 
 input_boolean:
   turbo:
-    name: Dual-speed Pump
-    icon: mdi:play-speed
+    name: "Robot de nettoyage"
+    icon: mdi:robot-vacuum
   
   factory_started:
     name: Factory config started
@@ -72,7 +72,7 @@ automation:
   - service: input_number.set_value
     data:
       entity_id: input_number.bleach_speed
-      value: 25
+      value: 15
   - service: input_number.set_value
     data:
       entity_id: input_number.fc_target

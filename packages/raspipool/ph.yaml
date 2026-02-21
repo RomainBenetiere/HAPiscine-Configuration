@@ -9,6 +9,7 @@ sensor:
 
   - platform: statistics
     name: ph_mean
+    unique_id: raspipool_ph_mean
     entity_id: sensor.ezo_ph
     state_characteristic: mean
     max_age:

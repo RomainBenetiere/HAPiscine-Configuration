@@ -1,6 +1,7 @@
 template:
   - sensor:
       - name: "Cycle pool"
+        unique_id: raspipool_cycle_pool
         state: >-
           {% set ezo_temp = states('sensor.ezo_temperature') %}
           {% if ezo_temp in ['unknown', 'unavailable', 'none'] %}
@@ -27,6 +28,7 @@ template:
 #        name: "Surpressor"
 #        state: "{{ states('input_number.surpressor') | round(0) }}"
       - name: "Net power"
+        unique_id: raspipool_net_power
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ states('input_number.sim_power_consumption') | float(0) -
@@ -36,15 +38,18 @@ template:
                states('sensor.envoy_122301074544_production_d_electricite_actuelle') | float(0) }}
           {% endif %}
       - name: "Time salt max"
+        unique_id: raspipool_time_salt_max
         state: >-
           {% set tsaltmax = ((states('sensor.pool_water_temperature') | float(0) - 14) * 12 * 4 + 47.6) | int %}
           {{ 0 if tsaltmax < 0 else tsaltmax }}
   - binary_sensor:
       - name: "Power excess"
+        unique_id: raspipool_power_excess
         state: "{{ states('sensor.net_power_mean') | float(0) < -1.2 }}"
         delay_on:
           minutes: 10
       - name: "Power shortage"
+        unique_id: raspipool_power_shortage
         state: "{{ states('sensor.net_power_mean') | float(0) > 0 }}"
         delay_on:
           minutes: 5
@@ -52,6 +57,7 @@ template:
 sensor:
   - platform: statistics
     name: net_power_mean
+    unique_id: raspipool_net_power_mean
     entity_id: sensor.net_power
     state_characteristic: mean
     max_age:
@@ -161,7 +167,7 @@ automation:
       [1440 , (states('input_number.cycle')|int * (1 - states('input_number.second_cycle')|int/100))|int]|min-
       [0 , states('input_number.muriatic_inject')|float/ states('input_number.muriatic_speed')|float ]|max|int-
       15-
-      [[0 , states('input_number.bleach_inject')|float/ states('input_number.bleach_speed')|float ]|max, states('sensor.time_salt_max')|int]|min|int
+      [[0 , (60 * states('input_number.bleach_inject')|float / states('input_number.bleach_speed')|float)|round(0)|int]|max, states('sensor.time_salt_max')|int]|min|int
       ]|max|int }}:00
   - entity_id: switch.pump
     service: switch.turn_off
@@ -173,6 +179,7 @@ automation:
       entity_id: input_number.cycle
       value: "{{ states('input_number.cycle') | int(0) - 1440 }}"
 
+# Démarre le robot de nettoyage pendant X % du cycle de filtration (switch.turbo = robot)
 - alias: cycle_turbo_start
   id: '1559223936600'
   trigger: []
@@ -244,6 +251,7 @@ automation:
         entity_id: switch.turbo
 
         
+# À l'arrêt de la pompe : coupe aussi le robot (et les pompes pH/ORP)
 - alias: pump_stop
   id: '1559449855764'
   initial_state: true

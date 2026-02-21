@@ -6,6 +6,7 @@ switch:
 # gpio_in_BCM_number: name
 # example=> pin#35 = 'gpio.24' = rpi24 = BCM_19 => 19: pump
 # execute 'gpio readall' to see all gpios an theis states in console
+# 17 = Turbo HW : pilote le robot de nettoyage (entity_id switch.turbo_hw / switch.turbo)
       27: Pump HW
       17: Turbo HW
       21: ph hw
@@ -26,6 +27,7 @@ input_boolean:
 template:
   - binary_sensor:
       - name: "Bleach"
+        unique_id: raspipool_bleach
         device_class: plug
         state: "{{ is_state('switch.orp', 'on') }}"
         icon: >-
@@ -35,6 +37,7 @@ template:
             mdi:lightning-bolt
           {% endif %}
       - name: "Muriatic"
+        unique_id: raspipool_muriatic
         device_class: plug
         state: "{{ is_state('switch.ph', 'on') }}"
         icon: >-

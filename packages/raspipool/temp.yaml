@@ -25,6 +25,7 @@ sensor:
 
   - platform: statistics
     name: pool_water_temperature
+    unique_id: raspipool_pool_water_temperature
     entity_id: sensor.ezo_temperature
     state_characteristic: mean
     max_age:

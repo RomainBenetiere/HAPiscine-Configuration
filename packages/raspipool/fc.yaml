@@ -2,6 +2,7 @@
 template:
   - sensor:
       - name: "E FC"
+        unique_id: raspipool_e_fc
         state: >-
           {{ ( 0.23 * (1 + states('input_number.e_fc_adjust') | float(0) / 100 ) *
             (14 - states('sensor.ph_mean') | float(0)) ** (1 / (400 - states('sensor.orp_mean') | float(0))) *

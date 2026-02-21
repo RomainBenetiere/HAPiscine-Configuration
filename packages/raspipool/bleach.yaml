@@ -1,6 +1,20 @@
+# Électrolyseur au sel : ON/OFF. Unités = grammes de chlore (g) et g/h (ex. Zelia ZLT 75 = 15 g/h).
+# Quantité (g) = f(capacité, écart cible-actuel, rendement %). Durée (min) = 60 × quantité (g) / débit (g/h).
+template:
+  - sensor:
+      - name: "Duree marche cellule"
+        unique_id: raspipool_cell_run_duration
+        state: >-
+          {% set q = states('input_number.bleach_inject') | float(0) %}
+          {% set r = states('input_number.bleach_speed') | float(1) %}
+          {{ (60 * q / r) | round(1) if r > 0 else 0 }}
+        unit_of_measurement: min
+        icon: mdi:timer-outline
+
 sensor:
   - platform: history_stats
     name: bleach_on_last_hour
+    unique_id: raspipool_bleach_on_last_hour
     entity_id: switch.orp
     state: 'on'
     type: time
@@ -9,6 +23,7 @@ sensor:
 
   - platform: history_stats
     name: bleach_on_last_48h
+    unique_id: raspipool_bleach_on_last_48h
     entity_id: switch.orp
     state: 'on'
     type: time
@@ -25,25 +40,26 @@ input_number:
     icon: mdi:water-percent
     mode: box
   bleach_speed:
-    name: "Débit production (ml/min équiv.)"
-    min: 10
-    max: 100
-    step: 1
-    unit_of_measurement: 'ml/min'
-    icon: mdi:needle
+    name: "Débit de génération (g/h)"
+    min: 1
+    max: 30
+    step: 0.5
+    unit_of_measurement: "g/h"
+    icon: mdi:lightning-bolt
   notify_bleach_high:
-    name: "Production max 48h (L équiv.)"
+    name: "Temps marche max 48h (h)"
     min: 0
-    max: 15
-    step: 0.1
-    unit_of_measurement: 'l/48h'
+    max: 24
+    step: 0.5
+    unit_of_measurement: "h"
+    icon: mdi:timer-alert
   bleach_inject:
-    name: "Production à injecter (ml équiv.)"
+    name: "Quantité à produire (g)"
     min: 0
-    max: 20000
-    step: 5
-    unit_of_measurement: 'ml'
-    icon: mdi:beaker
+    max: 2000
+    step: 1
+    unit_of_measurement: "g"
+    icon: mdi:counter
     mode: box
 
 
@@ -53,7 +69,7 @@ automation:
   initial_state: true
   trigger:
     platform: template
-    value_template: "{% if states('input_number.notify_bleach_high') | int(0) > 0 and states('sensor.bleach_on_last_48h') | float(0) > (states('input_number.notify_bleach_high') | float(0) * 100) / (states('input_number.bleach_speed') | float(0) * 6) %}true{% endif %}"
+    value_template: "{% if states('input_number.notify_bleach_high') | float(0) > 0 and states('sensor.bleach_on_last_48h') | float(0) > states('input_number.notify_bleach_high') | float(0) %}true{% endif %}"
   condition: []
   action:
   - entity_id: switch.orp
@@ -62,7 +78,7 @@ automation:
     service: input_boolean.turn_on
   - service: persistent_notification.create
     data:
-      title: "Production électrolyseur bloquée ({{ states('input_number.notify_bleach_high') }} L/48h max)!!!"
+      title: "Cellule bloquée (limite 48h atteinte)"
       message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_electrolyzer_blocked"
 
@@ -95,15 +111,15 @@ automation:
     service: switch.turn_on
   - service: persistent_notification.create
     data:
-      title: "Production électrolyseur: ({{ states('input_number.bleach_inject') }} ml équiv.)!!!"
+      title: "Cellule en marche ({{ (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(1)) | round(0) }} min)"
       message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_electrolyzer_start"
-  - delay: 00:{{ [[0, states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(0)] | max, states('sensor.time_salt_max') | int(0)] | min | int(0) }}:00
+  - delay: 00:{{ [[0, (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(0)) | round(0)] | max, states('sensor.time_salt_max') | int(0)] | min | int(0) }}:00
   - entity_id: switch.orp
     service: switch.turn_off
   - service: persistent_notification.create
     data:
-      title: "Fin production électrolyseur!!!"
+      title: "Fin marche cellule"
       message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_electrolyzer_end"
 

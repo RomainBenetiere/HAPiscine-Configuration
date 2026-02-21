@@ -1,11 +1,13 @@
 template:
   - sensor:
       - name: "Muriatic tank"
+        unique_id: raspipool_muriatic_tank
         state: "{{ states('input_number.muriatic_tank') | float(0) | round(2) }}"
 
 sensor:
   - platform: history_stats
     name: muriatic_on_last_hour
+    unique_id: raspipool_muriatic_on_last_hour
     entity_id: switch.ph
     state: 'on'
     type: time
@@ -14,6 +16,7 @@ sensor:
 
   - platform: history_stats
     name: muriatic_on_last_48h
+    unique_id: raspipool_muriatic_on_last_48h
     entity_id: switch.ph
     state: 'on'
     type: time

@@ -93,6 +93,7 @@ views:
                 hold_action:
                   action: toggle
               - entity: switch.turbo
+                name: Robot
                 hold_action:
                   action: toggle
               - entity: binary_sensor.muriatic
@@ -182,9 +183,11 @@ views:
               - entity: input_number.bleach_concentration
                 name: Rendement cellule (%)
               - entity: input_number.bleach_speed
-                name: Débit production (ml/min)
+                name: Débit de génération (g/h)
+              - entity: sensor.duree_marche_cellule
+                name: Durée de marche (prochaine)
               - entity: switch.orp
-                name: Cellule en marche
+                name: Cellule (ON/OFF)
                 secondary_info: last-changed
               - entity: input_boolean.lock_bleach
                 name: Verrouiller électrolyseur
@@ -219,7 +222,9 @@ views:
           - entity: input_datetime.recirculation
             name: Turnover rate
           - entity: input_boolean.turbo
+            name: Robot de nettoyage
           - entity: input_number.turbo
+            name: "% du cycle avec robot"
           - label: Filter
             type: section
           - entity: input_datetime.cycle_start
@@ -238,7 +243,9 @@ views:
           - entity: sensor.e_fc
             name: Désinfection actuelle (ppm)
           - entity: input_number.bleach_inject
-            name: Prochaine production (ml équiv.)
+            name: Quantité à produire (g)
+          - entity: sensor.duree_marche_cellule
+            name: Durée marche cellule (min)
           - entity: input_number.e_fc_adjust
             name: Ajustement ±% désinfection
           - label: pH
@@ -257,8 +264,12 @@ views:
       - sensor.cycle_pool
       - input_number.out_of_order
     title: Advanced
-    icon: 'mdi:settings'
+    path: advanced
+    icon: mdi:hammer-wrench
     cards:
+      - type: markdown
+        content: |
+          **Maintenance & cumuls** — Compteur de maintenance, réinitialisation du cumul de filtration, et lancement manuel de la pompe.
       - type: horizontal-stack
         cards:
           - icon_height: 64px
@@ -267,7 +278,7 @@ views:
               action: none
             entity: input_number.out_of_order
             show_name: true
-            name: Maintenance
+            name: Jours depuis maintenance
             show_icon: true
             hold_action:
               action: more-info
@@ -277,7 +288,7 @@ views:
               action: more-info
             entity: input_datetime.cummulated_flow_start
             show_name: true
-            name: Reset Cumm. Flow
+            name: Réinitialiser le cumul
             show_icon: true
             hold_action:
               action: call-service
@@ -290,15 +301,20 @@ views:
               action: none
             entity: input_number.pump_on_for
             show_name: true
-            name: Filter for ...
+            name: Filtrer pendant (durée)
             show_icon: true
             hold_action:
               action: more-info
-      - entities:
+      - type: entities
+        title: Cumul de filtration (depuis la date de début)
+        entities:
           - entity: input_datetime.cummulated_flow_start
-          - entity: sensor.cummulated_flow_high
+            name: Début du cumul
           - entity: sensor.cummulated_flow_low
-        type: entities
+            name: Temps filtration (pompe seule)
+          - entity: sensor.cummulated_flow_high
+            name: Temps robot
+        show_header_toggle: false
   - badges: []
     title: Simulation
     icon: 'mdi:flask-outline'
@@ -315,6 +331,7 @@ views:
           - entity: input_number.sim_power_production
           - entity: input_boolean.sim_pump
           - entity: input_boolean.sim_turbo
+            name: Sim Robot
           - entity: input_boolean.sim_ph_pump
           - entity: input_boolean.sim_orp_pump
           - entity: input_boolean.sim_flowd

@@ -1,6 +1,8 @@
+# pump_state: "high" = robot en marche (n'impacte pas remain_cycles, seulement la filtration "low" compte)
 template:
   - sensor:
       - name: "Pump state"
+        unique_id: raspipool_pump_state
         state: >-
           {% if is_state('switch.pump', 'on') %}
             {% if is_state('switch.turbo', 'on') %}
@@ -12,19 +14,20 @@ template:
             None
           {% endif %}
       - name: "Remain cycles"
+        unique_id: raspipool_remain_cycles
         state: >-
           {% set recirc_hours = state_attr('input_datetime.recirculation', 'hour') | int(0) %}
           {% set recirc_minutes = state_attr('input_datetime.recirculation', 'minute') | int(0) %}
           {% set recirc_total = recirc_hours + (recirc_minutes / 60) %}
           {% set recirc_total = recirc_total if recirc_total > 0 else 1 %}
           {% set low = states('sensor.cummulated_flow_low') | float(0) %}
-          {% set high = states('sensor.cummulated_flow_high') | float(0) %}
           {% set cycles = states('input_number.notify_cycles') | float(0) %}
-          {{ (cycles - (low + high * 5) / recirc_total) | round(1) }}
+          {{ (cycles - low / recirc_total) | round(1) }}
 
 sensor:
   - platform: history_stats
     name: cummulated_flow_low
+    unique_id: raspipool_cummulated_flow_low
     entity_id: sensor.pump_state
     state: 'low'
     type: time
@@ -33,6 +36,7 @@ sensor:
 
   - platform: history_stats
     name: cummulated_flow_high
+    unique_id: raspipool_cummulated_flow_high
     entity_id: sensor.pump_state
     state: 'high'
     type: time
