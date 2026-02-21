@@ -272,37 +272,28 @@ views:
           **Maintenance & cumuls** — Compteur de maintenance, réinitialisation du cumul de filtration, et lancement manuel de la pompe.
       - type: horizontal-stack
         cards:
-          - icon_height: 64px
-            type: entity-button
+          - type: button
+            entity: input_number.out_of_order
+            name: Jours depuis maintenance
             tap_action:
               action: none
-            entity: input_number.out_of_order
-            show_name: true
-            name: Jours depuis maintenance
-            show_icon: true
             hold_action:
               action: more-info
-          - icon_height: 64px
-            type: entity-button
+          - type: button
+            entity: input_datetime.cummulated_flow_start
+            name: Réinitialiser le cumul
             tap_action:
               action: more-info
-            entity: input_datetime.cummulated_flow_start
-            show_name: true
-            name: Réinitialiser le cumul
-            show_icon: true
             hold_action:
               action: call-service
               service: automation.trigger
               service_data:
                 entity_id: automation.reset_cummulated_flow_start
-          - icon_height: 64px
-            type: entity-button
+          - type: button
+            entity: input_number.pump_on_for
+            name: Filtrer pendant (durée)
             tap_action:
               action: none
-            entity: input_number.pump_on_for
-            show_name: true
-            name: Filtrer pendant (durée)
-            show_icon: true
             hold_action:
               action: more-info
       - type: entities
