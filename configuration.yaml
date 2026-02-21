@@ -23,5 +23,12 @@ logger:
 # automation: !include automations.yaml
 script: !include scripts.yaml
 lovelace:
-  mode: yaml
+  resource_mode: yaml
+  dashboards:
+    lovelace:
+      mode: yaml
+      filename: ui-lovelace.yaml
+      title: Raspipool
+      icon: mdi:pool
+      show_in_sidebar: true
 
