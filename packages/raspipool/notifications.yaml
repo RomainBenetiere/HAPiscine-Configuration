@@ -1,6 +1,6 @@
 input_boolean:
   notify_seasson:
-    name: Notify seasson changes
+    name: Alertes changement de saison
     icon: mdi:comment-alert
 
 
@@ -22,7 +22,7 @@ automation:
   action:
   - service: persistent_notification.create
     data:
-      title: 'Winter is comming!!!'
+      title: "L'hiver arrive !"
       message: "@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_winter_session"
 
@@ -42,7 +42,7 @@ automation:
   action:
   - service: persistent_notification.create
     data:
-      title: "Summer is here!!!"
+      title: "L'été est là !"
       message: "@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_summer_session"
 

@@ -54,7 +54,7 @@ automation:
   action:
   - service: persistent_notification.create
     data:
-      title: 'pH high ({{ trigger.to_state.state }})!!!'
+      title: 'pH trop haut ({{ trigger.to_state.state }})'
       message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
       notification_id: "pool_ph_high"
 
@@ -71,7 +71,7 @@ automation:
   action:
   - service: persistent_notification.create
     data:
-      title: 'pH low ({{ trigger.to_state.state }})!!!'
+      title: 'pH trop bas ({{ trigger.to_state.state }})'
       message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
       notification_id: "pool_ph_low"
 
@@ -85,7 +85,7 @@ automation:
   action:
   - service: persistent_notification.create
     data:
-      title: 'pH probe bad (calibrate?) !!!'
+      title: 'Sonde pH défaillante (à calibrer ?)'
       message: '{{ trigger.to_state.attributes.friendly_name }}: {{ trigger.to_state.state }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
       notification_id: "pool_ph_probe_bad"
   - service: automation.turn_off

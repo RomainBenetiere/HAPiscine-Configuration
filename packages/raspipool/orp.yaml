@@ -43,7 +43,7 @@ automation:
   action:
   - service: persistent_notification.create
     data:
-      title: 'ORP probe bad (calibrate?) !!!'
+      title: 'Sonde ORP défaillante (à calibrer ?)'
       message: 'Between {{ state_attr("sensor.orp_mean", "min_value") }} and {{ state_attr("sensor.orp_mean", "max_value") }}{{ "\n\n" }}@{{ now().strftime("%H:%M") }}[{{ now().day }}/{{ now().month }}]'
       notification_id: "pool_orp_probe_bad"
   - service: automation.turn_off

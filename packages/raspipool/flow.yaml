@@ -45,14 +45,14 @@ sensor:
 
 input_datetime:
   cummulated_flow_start:
-    name: Cummulated Flow Start
+    name: Début cumul débit
     has_date: true
     has_time: true
     icon: mdi:timer
 
 input_number:
   notify_cycles:
-    name: Notify cycles flow
+    name: Alerte cycles filtration
     icon: mdi:timer
     min: 0
     max: 100

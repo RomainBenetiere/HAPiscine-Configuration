@@ -1,10 +1,10 @@
 input_datetime:
   cycle_start:
-    name: Pump cycle start time
+    name: Heure de démarrage cycle pompe
     has_date: false
     has_time: true
   recirculation:
-    name: Recirculation cycle
+    name: Cycle de recirculation
     has_time: true
     has_date: false
     icon: mdi:timer
@@ -12,13 +12,13 @@ input_datetime:
 
 input_number:
   capacity:
-    name: Pool capacity (m3)
+    name: Capacité bassin (m³)
     min: 5
     max: 100
     unit_of_measurement: m3
     icon: mdi:water-pump
   quality:
-    name: Pool quality
+    name: Qualité eau
     min: 0
     max: 9
     unit_of_measurement: stars
@@ -38,7 +38,7 @@ input_boolean:
     icon: mdi:robot-vacuum
   
   factory_started:
-    name: Factory config started
+    name: Config usine démarrée
     icon: mdi:auto-fix
 
 
@@ -68,7 +68,7 @@ automation:
   - service: input_number.set_value
     data:
       entity_id: input_number.bleach_concentration
-      value: 5
+      value: 100
   - service: input_number.set_value
     data:
       entity_id: input_number.bleach_speed

@@ -1,7 +1,7 @@
 #https://www.home-assistant.io/components/sensor.command_line/
 sensor:
   - platform: command_line
-    name: RPI Temperature
+    name: Température RPI
     unique_id: raspipool_rpi_temperature
     command: "cat /sys/class/thermal/thermal_zone0/temp"
     unit_of_measurement: "°C"

@@ -5,7 +5,7 @@ views:
       - sensor.e_fc
       - sensor.cycle_pool
       - binary_sensor.flowd
-    title: Pool
+    title: Piscine
     panel: false
     icon: 'mdi:pool'
     cards:
@@ -65,7 +65,7 @@ views:
                     entity_id: sensor.ezo_orp
             type: glance
             show_state: true
-          - title: Supplies
+          - title: Fournitures
             type: horizontal-stack
             cards:
               - max: 20
@@ -76,7 +76,7 @@ views:
                   green: 15
                   red: 5
                   yellow: 10
-                name: remain cycles
+                name: cycles restants
                 type: gauge
               - max: 10
                 min: 0
@@ -118,63 +118,63 @@ views:
             show_state: false
             show_icon: true
   - badges: []
-    title: History
+    title: Historique
     panel: true
     icon: 'mdi:chart-line'
     cards:
       - type: horizontal-stack
         cards:
-          - title: last 3 hours
+          - title: 3 dernières heures
             entities:
               - entity: sensor.pump_state
               - entity: switch.orp
                 name: Électrolyseur
               - entity: switch.ph
-                name: Muriatic inj.
+                name: Acide
               - entity: sensor.ph_mean
                 name: pH
               - entity: sensor.orp_mean
                 name: ORP
               - entity: sensor.pool_water_temperature
-                name: water temp.
+                name: temp. eau
             type: history-graph
             hours_to_show: 3
-          - title: last 3 days
+          - title: 3 derniers jours
             entities:
               - entity: sensor.pump_state
               - entity: switch.orp
                 name: Électrolyseur
               - entity: switch.ph
-                name: Muriatic inj.
+                name: Acide
               - entity: sensor.ph_mean
                 name: pH
               - entity: sensor.orp_mean
                 name: ORP
               - entity: sensor.pool_water_temperature
-                name: water temp.
+                name: temp. eau
             type: history-graph
             hours_to_show: 72
   - badges: []
-    title: Chemical
+    title: Chimie
     panel: true
     icon: 'mdi:flask'
     cards:
       - type: horizontal-stack
         cards:
           - entities:
-              - label: Muriatic ( - pH )
+              - label: Acide ( - pH )
                 type: section
               - entity: input_number.muriatic_tank
-                name: Tank level
+                name: Niveau cuve
               - entity: input_number.muriatic_concentration
                 name: Concentration
               - entity: input_number.muriatic_speed
-                name: Speed injection
+                name: Débit injection
               - entity: switch.ph
-                name: Pump injection
+                name: Pompe injection
                 secondary_info: last-changed
               - entity: input_boolean.lock_muriatic
-                name: Lock Pump
+                name: Verrouiller pompe
             type: entities
             show_header_toggle: false
           - entities:
@@ -196,7 +196,7 @@ views:
   - badges: []
     path: default_view
     icon: 'mdi:message-alert'
-    title: Alerts
+    title: Alertes
     cards:
       - title: Notifications
         entities:
@@ -208,24 +208,24 @@ views:
         type: entities
         show_header_toggle: true
   - badges: []
-    title: Settings
+    title: Réglages
     icon: 'mdi:tune'
     cards:
-      - title: Pool Settings
+      - title: Réglages piscine
         entities:
-          - label: Pool
+          - label: Piscine
             type: section
           - entity: input_number.capacity
-            name: Capacity
+            name: Capacité
           - entity: input_number.quality
-            name: Quality
+            name: Qualité
           - entity: input_datetime.recirculation
-            name: Turnover rate
+            name: Renouvellement
           - entity: input_boolean.turbo
             name: Robot de nettoyage
           - entity: input_number.turbo
             name: "% du cycle avec robot"
-          - label: Filter
+          - label: Filtre
             type: section
           - entity: input_datetime.cycle_start
           - entity: input_number.second_cycle
@@ -234,7 +234,7 @@ views:
         type: entities
         show_header_toggle: false
         theme: default
-      - title: Chemical settings
+      - title: Réglages chimie
         entities:
           - label: Désinfection (électrolyseur au sel)
             type: section
@@ -251,11 +251,11 @@ views:
           - label: pH
             type: section
           - entity: input_number.ph_target
-            name: pH target
+            name: Cible pH
           - entity: sensor.ph_mean
-            name: pH actual
+            name: pH actuel
           - entity: input_number.muriatic_inject
-            name: Next muriatic injection (ml)
+            name: Prochaine injection acide (ml)
         type: entities
         show_header_toggle: false
   - badges:
@@ -263,7 +263,7 @@ views:
       - sensor.time
       - sensor.cycle_pool
       - input_number.out_of_order
-    title: Advanced
+    title: Avancé
     path: advanced
     icon: mdi:hammer-wrench
     cards:
@@ -311,7 +311,7 @@ views:
     icon: 'mdi:flask-outline'
     cards:
       - type: entities
-        title: Simulation
+        title: Mode simulation
         entities:
           - entity: input_boolean.simulation_mode
           - entity: input_number.sim_temperature
