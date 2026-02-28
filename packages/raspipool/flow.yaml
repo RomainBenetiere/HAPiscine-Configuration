@@ -1,4 +1,4 @@
-# pump_state: "high" = robot en marche (n'impacte pas remain_cycles, seulement la filtration "low" compte)
+# pump_state: "Robot" = robot en marche (n'impacte pas remain_cycles), "Filtration" = pompe seule
 template:
   - sensor:
       - name: "Pump state"
@@ -6,12 +6,12 @@ template:
         state: >-
           {% if is_state('switch.pump', 'on') %}
             {% if is_state('switch.turbo', 'on') %}
-              high
+              Robot
             {% else %}
-              low
+              Filtration
             {% endif %}
           {% else %}
-            None
+            Arrêt
           {% endif %}
       - name: "Remain cycles"
         unique_id: raspipool_remain_cycles
@@ -29,7 +29,7 @@ sensor:
     name: cummulated_flow_low
     unique_id: raspipool_cummulated_flow_low
     entity_id: sensor.pump_state
-    state: 'low'
+    state: 'Filtration'
     type: time
     start: "{{ state_attr('input_datetime.cummulated_flow_start','timestamp') }}"
     end: "{{ now() }}"
@@ -38,7 +38,7 @@ sensor:
     name: cummulated_flow_high
     unique_id: raspipool_cummulated_flow_high
     entity_id: sensor.pump_state
-    state: 'high'
+    state: 'Robot'
     type: time
     start: "{{ state_attr('input_datetime.cummulated_flow_start','timestamp') }}"
     end: "{{ now() }}"
@@ -52,7 +52,7 @@ input_datetime:
 
 input_number:
   notify_cycles:
-    name: Alerte cycles filtration
+    name: "Alerte cycles filtration"
     icon: mdi:timer
     min: 0
     max: 100

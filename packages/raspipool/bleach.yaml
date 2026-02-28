@@ -48,7 +48,7 @@ input_number:
     unit_of_measurement: "g/h"
     icon: mdi:lightning-bolt
   notify_bleach_high:
-    name: "Temps marche max 48h (h)"
+    name: "Temps de marche maximal 48h (h)"
     min: 0
     max: 24
     step: 0.5
@@ -112,7 +112,7 @@ automation:
     service: switch.turn_on
   - service: persistent_notification.create
     data:
-      title: "Cellule en marche ({{ (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(1)) | round(0) }} min)"
+      title: "Cellule en marche ({{ [[0, (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(1)) | round(0)] | max, states('sensor.time_salt_max') | int(0)] | min | int(0) }} min)"
       message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_electrolyzer_start"
   - delay: 00:{{ [[0, (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(0)) | round(0)] | max, states('sensor.time_salt_max') | int(0)] | min | int(0) }}:00
