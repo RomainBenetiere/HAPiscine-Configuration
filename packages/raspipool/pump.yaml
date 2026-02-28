@@ -135,10 +135,6 @@ automation:
   - delay: 00:00:10
   - service: automation.trigger
     entity_id: automation.cycle_turbo_start
-  - condition: numeric_state
-    entity_id: input_number.second_cycle
-    above: 0
-#  - delay: 00:{{720 + (states('input_number.cycle')|int * (100 - states('input_number.second_cycle')|int)/200)|int }}:00
 
 - alias: cycle_pump_start
   id: '1559293900608'
@@ -178,6 +174,32 @@ automation:
     data:
       entity_id: input_number.cycle
       value: "{{ states('input_number.cycle') | int(0) - 1440 }}"
+
+- alias: cycle_pump_second_start
+  id: '20260220120000'
+  initial_state: true
+  trigger:
+  - platform: time
+    at: input_datetime.second_cycle_start
+  condition:
+  - condition: numeric_state
+    entity_id: input_number.second_cycle
+    above: 0
+  - condition: state
+    entity_id: switch.pump
+    state: 'off'
+  - condition: template
+    value_template: >-
+      {% set start = state_attr('input_datetime.cycle_start', 'timestamp') | float(0) %}
+      {% set minutes = states('input_number.cycle') | float(0) * (1 - states('input_number.second_cycle') | float(0) / 100) %}
+      {% set finished = start + (minutes * 60) %}
+      {{ as_timestamp(now()) | float(0) >= finished }}
+  action:
+  - entity_id: switch.pump
+    service: switch.turn_on
+  - delay: 00:{{ (states('input_number.cycle')|int * states('input_number.second_cycle')|int / 100)|int }}:00
+  - entity_id: switch.pump
+    service: switch.turn_off
 
 # Démarre le robot de nettoyage pendant X % du cycle de filtration (switch.turbo = robot)
 - alias: cycle_turbo_start

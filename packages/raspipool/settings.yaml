@@ -8,6 +8,11 @@ input_datetime:
     has_time: true
     has_date: false
     icon: mdi:timer
+  second_cycle_start:
+    name: Heure de démarrage 2ᵉ cycle
+    has_date: false
+    has_time: true
+    icon: mdi:clock-outline
 
 
 input_number:

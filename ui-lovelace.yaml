@@ -228,6 +228,9 @@ views:
           - label: Filtre
             type: section
           - entity: input_datetime.cycle_start
+            name: Heure 1er cycle
+          - entity: input_datetime.second_cycle_start
+            name: Heure 2ᵉ cycle
           - entity: input_number.second_cycle
           - entity: sensor.cycle_pool
           - entity: input_number.cycle
