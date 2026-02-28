@@ -57,6 +57,9 @@ template:
             {{ states('sensor.envoy_122301074544_consommation_electrique_actuelle') | float(0) -
                states('sensor.envoy_122301074544_production_d_electricite_actuelle') | float(0) }}
           {% endif %}
+        unit_of_measurement: "W"
+        device_class: power
+        state_class: measurement
       - name: "Time salt max"
         unique_id: raspipool_time_salt_max
         state: >-

@@ -1,5 +1,5 @@
 # Électrolyseur au sel : ON/OFF. Unités = grammes de chlore (g) et g/h (ex. Zelia ZLT 75 = 15 g/h).
-# Quantité (g) = f(capacité, écart cible-actuel, rendement %). Durée (min) = 60 × quantité (g) / débit (g/h).
+# Quantité (g) = f(capacité, écart cible-actuel, rendement %). Durée effective = min(60×q/r, time_salt_max).
 template:
   - sensor:
       - name: "Duree marche cellule"
@@ -10,6 +10,16 @@ template:
           {{ (60 * q / r) | round(1) if r > 0 else 0 }}
         unit_of_measurement: min
         icon: mdi:timer-outline
+      - name: "Duree marche cellule effective"
+        unique_id: raspipool_cell_run_duration_effective
+        state: >-
+          {% set q = states('input_number.bleach_inject') | float(0) %}
+          {% set r = states('input_number.bleach_speed') | float(1) %}
+          {% set calc = (60 * q / r) | round(0) | int if r > 0 else 0 %}
+          {% set tmax = states('sensor.time_salt_max') | int(0) %}
+          {{ [calc, tmax] | min }}
+        unit_of_measurement: min
+        icon: mdi:timer-check
 
 sensor:
   - platform: history_stats

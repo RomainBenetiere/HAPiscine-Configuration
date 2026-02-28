@@ -206,6 +206,8 @@ views:
                 name: Débit de génération (g/h)
               - entity: sensor.duree_marche_cellule
                 name: Durée de marche (prochaine)
+              - entity: sensor.duree_marche_cellule_effective
+                name: Temps de marche pris en compte (min)
               - entity: switch.orp
                 name: Cellule (ON/OFF)
                 secondary_info: last-changed
