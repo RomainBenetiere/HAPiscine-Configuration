@@ -45,11 +45,14 @@ input_number:
     unit_of_measurement: 'ml/min'
     icon: mdi:needle
   notify_muriatic_high:
+    name: "Notifier niveau élevé acide 48h (l/48h)"
     min: 0
     max: 5
     step: 0.1
     unit_of_measurement: 'l/48h'
+    icon: mdi:flask
   notify_muriatic_tank:
+    name: "Notifier niveau réservoir acide (l)"
     min: 0
     max: 5
     step: 0.5

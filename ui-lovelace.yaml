@@ -76,7 +76,7 @@ views:
                   green: 15
                   red: 5
                   yellow: 10
-                name: cycles restants
+                name: Cycles restants
                 type: gauge
               - max: 10
                 min: 0
@@ -86,10 +86,12 @@ views:
                   green: 5
                   red: 1
                   yellow: 3
+                name: Cuve acide
                 type: gauge
           - show_name: true
             entities:
               - entity: switch.pump
+                name: Pompe
                 hold_action:
                   action: toggle
               - entity: switch.turbo
@@ -97,6 +99,7 @@ views:
                 hold_action:
                   action: toggle
               - entity: binary_sensor.muriatic
+                name: Acide
                 hold_action:
                   action: call-service
                   service: switch.toggle
@@ -106,6 +109,7 @@ views:
                   action: navigate
                   navigation_path: /lovelace/2
               - entity: binary_sensor.bleach
+                name: Électrolyseur
                 hold_action:
                   action: call-service
                   service: switch.toggle
@@ -117,6 +121,20 @@ views:
             type: glance
             show_state: false
             show_icon: true
+          - title: Production solaire
+            type: entities
+            entities:
+              - entity: sensor.production_solaire
+                name: Production (W)
+              - entity: sensor.consommation_electrique
+                name: Consommation (W)
+              - entity: sensor.net_power
+                name: Puissance nette (W)
+              - entity: binary_sensor.power_excess
+                name: Excès solaire
+              - entity: binary_sensor.power_shortage
+                name: Manque de production
+            show_header_toggle: false
   - badges: []
     title: Historique
     panel: true
@@ -124,9 +142,10 @@ views:
     cards:
       - type: horizontal-stack
         cards:
-          - title: 3 dernières heures
+          - title: 3 Dernières heures
             entities:
               - entity: sensor.pump_state
+                name: État pompe
               - entity: switch.orp
                 name: Électrolyseur
               - entity: switch.ph
@@ -136,12 +155,13 @@ views:
               - entity: sensor.orp_mean
                 name: ORP
               - entity: sensor.pool_water_temperature
-                name: temp. eau
+                name: Temp. eau
             type: history-graph
             hours_to_show: 3
-          - title: 3 derniers jours
+          - title: 3 Derniers jours
             entities:
               - entity: sensor.pump_state
+                name: État pompe
               - entity: switch.orp
                 name: Électrolyseur
               - entity: switch.ph
@@ -151,7 +171,7 @@ views:
               - entity: sensor.orp_mean
                 name: ORP
               - entity: sensor.pool_water_temperature
-                name: temp. eau
+                name: Temp. eau
             type: history-graph
             hours_to_show: 72
   - badges: []
@@ -201,10 +221,15 @@ views:
       - title: Notifications
         entities:
           - entity: input_number.notify_cycles
+            name: Alerte cycles filtration
           - entity: input_boolean.notify_seasson
+            name: Alertes changement de saison
           - entity: input_number.notify_muriatic_high
+            name: Notifier niveau élevé acide 48h (l/48h)
           - entity: input_number.notify_muriatic_tank
+            name: Notifier niveau réservoir acide (l)
           - entity: input_number.notify_bleach_high
+            name: Temps de marche maximal 48h (h)
         type: entities
         show_header_toggle: true
   - badges: []
@@ -221,10 +246,18 @@ views:
             name: Qualité
           - entity: input_datetime.recirculation
             name: Renouvellement
+          - label: Robot (saisie directe)
+            type: section
           - entity: input_boolean.turbo
             name: Robot de nettoyage
+          - entity: input_boolean.robot_demarrage_solaire
+            name: Robot démarrage sur solaire
           - entity: input_number.turbo
             name: "% du cycle avec robot"
+          - entity: input_datetime.robot_cycle_start
+            name: Heure démarrage robot
+          - entity: input_number.robot_solar_max_minutes
+            name: Temps max robot solaire (min)
           - label: Filtre
             type: section
           - entity: input_datetime.cycle_start

@@ -27,6 +27,26 @@ template:
 #      surpressor:
 #        name: "Surpressor"
 #        state: "{{ states('input_number.surpressor') | round(0) }}"
+      - name: "Production solaire"
+        unique_id: raspipool_power_production
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_power_production') | float(0) }}
+          {% else %}
+            {{ states('sensor.envoy_122301074544_production_d_electricite_actuelle') | float(0) }}
+          {% endif %}
+        unit_of_measurement: "W"
+        device_class: power
+      - name: "Consommation électrique"
+        unique_id: raspipool_power_consumption
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ states('input_number.sim_power_consumption') | float(0) }}
+          {% else %}
+            {{ states('sensor.envoy_122301074544_consommation_electrique_actuelle') | float(0) }}
+          {% endif %}
+        unit_of_measurement: "W"
+        device_class: power
       - name: "Net power"
         unique_id: raspipool_net_power
         state: >-
@@ -132,9 +152,6 @@ automation:
   - condition: numeric_state
     entity_id: input_number.cycle
     below: 1440
-  - delay: 00:00:10
-  - service: automation.trigger
-    entity_id: automation.cycle_turbo_start
 
 - alias: cycle_pump_start
   id: '1559293900608'
@@ -201,10 +218,13 @@ automation:
   - entity_id: switch.pump
     service: switch.turn_off
 
-# Démarre le robot de nettoyage pendant X % du cycle de filtration (switch.turbo = robot)
+# Démarre le robot à l'heure programmée (robot_cycle_start), durée = % du cycle avec robot
 - alias: cycle_turbo_start
   id: '1559223936600'
-  trigger: []
+  initial_state: true
+  trigger:
+  - platform: time
+    at: input_datetime.robot_cycle_start
   condition: []
   action:
   - condition: state
@@ -215,13 +235,11 @@ automation:
     above: 0
   - entity_id: switch.turbo
     service: switch.turn_off
-  - delay: 00:{{ (states('input_number.cycle')|int * (1 - states('input_number.second_cycle')|int/100) * (1 - states('input_number.turbo')|int /100) /2 )|int }}:00
   - entity_id: switch.turbo
     service: switch.turn_on
   - delay: 00:{{ (states('input_number.cycle')|int * (1 - states('input_number.second_cycle')|int/100) * states('input_number.turbo')|int /100 )|int }}:00
   - entity_id: switch.turbo
     service: switch.turn_off
-  initial_state: true
 
 - alias: pump_start
   id: '1559049859754'
@@ -235,6 +253,7 @@ automation:
     to: 'on'
   action:
   - choose:
+    # Démarrer le robot si excès solaire + Robot de nettoyage ET Robot démarrage sur solaire activés
     - conditions:
       - condition: state
         entity_id: binary_sensor.power_excess
@@ -245,12 +264,18 @@ automation:
       - condition: state
         entity_id: switch.turbo
         state: 'off'
-      - condition: numeric_state
-        entity_id: counter.minutes_fonctionnement
-        below: 46
+      - condition: state
+        entity_id: input_boolean.turbo
+        state: 'on'
+      - condition: state
+        entity_id: input_boolean.robot_demarrage_solaire
+        state: 'on'
+      - condition: template
+        value_template: "{{ states('counter.minutes_fonctionnement') | int(0) < states('input_number.robot_solar_max_minutes') | int(45) + 1 }}"
       sequence:
       - service: switch.turn_on
         entity_id: switch.turbo
+    # Couper le robot si manque de production
     - conditions:
       - condition: state
         entity_id: binary_sensor.power_shortage
@@ -261,13 +286,13 @@ automation:
       sequence:
       - service: switch.turn_off
         entity_id: switch.turbo
+    # Couper le robot quand temps max solaire atteint
     - conditions:
       - condition: state
         entity_id: switch.turbo
         state: 'on'
-      - condition: numeric_state
-        entity_id: counter.minutes_fonctionnement
-        above: 45
+      - condition: template
+        value_template: "{{ states('counter.minutes_fonctionnement') | int(0) > states('input_number.robot_solar_max_minutes') | int(45) }}"
       sequence:
       - service: switch.turn_off
         entity_id: switch.turbo
@@ -322,23 +347,21 @@ automation:
   initial_state: true  
   trigger:
   - platform: time_pattern
-    minutes: '/5'  # Déclenche toutes les minutes
+    minutes: '/5'  # Toutes les 5 min : incrémente le compteur robot ou déclenche arrêt si max solaire atteint
   action:
   - choose:
     - conditions:
       - condition: state
         entity_id: switch.turbo
-        state: 'on'  # S'assure que le surpresseur est en marche
-      - condition: numeric_state
-        entity_id: counter.minutes_fonctionnement
-        below: 46
+        state: 'on'
+      - condition: template
+        value_template: "{{ states('counter.minutes_fonctionnement') | int(0) < states('input_number.robot_solar_max_minutes') | int(45) + 1 }}"
       sequence:
       - service: counter.increment
         entity_id: counter.minutes_fonctionnement
     - conditions:
-      - condition: numeric_state
-        entity_id: counter.minutes_fonctionnement
-        above: 45
+      - condition: template
+        value_template: "{{ states('counter.minutes_fonctionnement') | int(0) > states('input_number.robot_solar_max_minutes') | int(45) }}"
       sequence:
       - service: automation.trigger
         entity_id: automation.pump_start

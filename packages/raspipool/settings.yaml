@@ -13,6 +13,11 @@ input_datetime:
     has_date: false
     has_time: true
     icon: mdi:clock-outline
+  robot_cycle_start:
+    name: Heure de démarrage robot (cycle programmé)
+    has_date: false
+    has_time: true
+    icon: mdi:robot-vacuum
 
 
 input_number:
@@ -35,12 +40,24 @@ input_number:
     step: 5
     unit_of_measurement: '%'
     icon: mdi:robot-vacuum
+  robot_solar_max_minutes:
+    name: Temps max robot solaire (min)
+    min: 5
+    max: 180
+    step: 5
+    initial: 45
+    unit_of_measurement: min
+    icon: mdi:timer-sand
+    mode: box
 
 
 input_boolean:
   turbo:
     name: "Robot de nettoyage"
     icon: mdi:robot-vacuum
+  robot_demarrage_solaire:
+    name: "Robot démarrage sur solaire"
+    icon: mdi:solar-power
   
   factory_started:
     name: Config usine démarrée
@@ -102,6 +119,10 @@ automation:
     data:
       entity_id: input_number.muriatic_speed
       value: 25
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.robot_solar_max_minutes
+      value: 45
 
 counter:
   minutes_fonctionnement:

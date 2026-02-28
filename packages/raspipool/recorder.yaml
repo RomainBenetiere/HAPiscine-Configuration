@@ -24,4 +24,6 @@ recorder:
       - sensor.cycle_pool
       - sensor.net_power
       - sensor.net_power_mean
+      - sensor.production_solaire
+      - sensor.consommation_electrique
 

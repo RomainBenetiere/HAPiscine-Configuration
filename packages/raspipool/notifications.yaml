@@ -1,6 +1,6 @@
 input_boolean:
   notify_seasson:
-    name: Alertes changement de saison
+    name: "Alertes changement de saison"
     icon: mdi:comment-alert
 
 
