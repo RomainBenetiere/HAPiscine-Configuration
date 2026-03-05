@@ -68,7 +68,7 @@ template:
   - binary_sensor:
       - name: "Power excess"
         unique_id: raspipool_power_excess
-        state: "{{ states('sensor.net_power_mean') | float(0) < -1.2 }}"
+        state: "{{ states('sensor.net_power_mean') | float(0) < -1200 }}"
         delay_on:
           minutes: 10
       - name: "Power shortage"
