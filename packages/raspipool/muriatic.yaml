@@ -65,6 +65,14 @@ input_number:
     unit_of_measurement: 'ml'
     icon: mdi:beaker
     mode: box
+  muriatic_delay_effective:
+    name: "Durée injection acide appliquée (min)"
+    min: 0
+    max: 240
+    step: 1
+    unit_of_measurement: 'min'
+    icon: mdi:timer-check
+    mode: box
 
 automation:
 - alias: muriatic_every_hour
@@ -139,12 +147,16 @@ automation:
     below: 100.0
   - entity_id: switch.ph
     service: switch.turn_on
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.muriatic_delay_effective
+      value: "{{ [0, (states('input_number.muriatic_inject') | float(0) / states('input_number.muriatic_speed') | float(1))] | max | round(0) | int }}"
   - service: persistent_notification.create
     data:
       title: "Injection acide: ({{ states('input_number.muriatic_inject') }} ml)!!!"
       message: "{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_muriatic_inject_start"
-  - delay: 00:00:{{ [0, 60 * states('input_number.muriatic_inject') | float(0) / states('input_number.muriatic_speed') | float(0)] | max | int(0) }}
+  - delay: 00:{{ states('input_number.muriatic_delay_effective') | int(0) }}:00
   - entity_id: switch.ph
     service: switch.turn_off
   - service: persistent_notification.create

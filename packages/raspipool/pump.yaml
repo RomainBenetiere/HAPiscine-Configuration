@@ -179,12 +179,16 @@ automation:
   - delay: 00:00:10
   - service: automation.trigger
     entity_id: automation.bleach_inject
-  - delay: 00:{{ [0,
-      [1440 , (states('input_number.cycle')|int * (1 - states('input_number.second_cycle')|int/100))|int]|min-
-      [0 , states('input_number.muriatic_inject')|float/ states('input_number.muriatic_speed')|float ]|max|int-
-      15-
-      [[0 , (60 * states('input_number.bleach_inject')|float / states('input_number.bleach_speed')|float)|round(0)|int]|max, states('sensor.time_salt_max')|int]|min|int
-      ]|max|int }}:00
+  - delay: 00:{{ [
+      0,
+      [
+        1440,
+        (states('input_number.cycle') | int(0) * (1 - states('input_number.second_cycle') | int(0) / 100))
+      ] | min
+      - [0, states('input_number.muriatic_delay_effective') | float(0)] | max
+      - 15
+      - [0, states('input_number.bleach_delay_effective') | float(0)] | max
+    ] | max | int(0) }}:00
   - entity_id: switch.pump
     service: switch.turn_off
   - condition: numeric_state

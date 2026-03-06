@@ -72,6 +72,14 @@ input_number:
     unit_of_measurement: "g"
     icon: mdi:counter
     mode: box
+  bleach_delay_effective:
+    name: "Durée marche cellule appliquée (min)"
+    min: 0
+    max: 1440
+    step: 1
+    unit_of_measurement: "min"
+    icon: mdi:timer-check
+    mode: box
 
 
 automation:
@@ -120,12 +128,16 @@ automation:
     below: 5000.0
   - entity_id: switch.orp
     service: switch.turn_on
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.bleach_delay_effective
+      value: "{{ states('sensor.duree_marche_cellule_effective') | int(0) }}"
   - service: persistent_notification.create
     data:
       title: "Cellule en marche ({{ [[0, (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(1)) | round(0)] | max, states('sensor.time_salt_max') | int(0)] | min | int(0) }} min)"
       message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_electrolyzer_start"
-  - delay: 00:{{ [[0, (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(0)) | round(0)] | max, states('sensor.time_salt_max') | int(0)] | min | int(0) }}:00
+  - delay: 00:{{ states('input_number.bleach_delay_effective') | int(0) }}:00
   - entity_id: switch.orp
     service: switch.turn_off
   - service: persistent_notification.create

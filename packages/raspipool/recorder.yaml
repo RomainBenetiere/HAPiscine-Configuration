@@ -22,8 +22,16 @@ recorder:
       - sensor.e_fc
       - input_number.cycle
       - sensor.cycle_pool
+      - input_number.bleach_speed
+      - sensor.time_salt_max
       - sensor.net_power
       - sensor.net_power_mean
       - sensor.production_solaire
       - sensor.consommation_electrique
+      - sensor.duree_marche_cellule
+      - sensor.duree_marche_cellule_effective
+      - binary_sensor.power_excess
+      - binary_sensor.power_shortage
+      - input_number.bleach_delay_effective
+      - input_number.muriatic_delay_effective
 
