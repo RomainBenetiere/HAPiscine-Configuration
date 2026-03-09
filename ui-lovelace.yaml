@@ -215,6 +215,41 @@ views:
                 name: Verrouiller électrolyseur
             type: entities
             show_header_toggle: false
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: input_select.pool_mode
+            name: Low
+            icon: mdi:water-percent
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Low
+              target:
+                entity_id: input_select.pool_mode
+          - type: button
+            entity: input_select.pool_mode
+            name: Medium
+            icon: mdi:water-check
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Medium
+              target:
+                entity_id: input_select.pool_mode
+          - type: button
+            entity: input_select.pool_mode
+            name: High
+            icon: mdi:water-alert
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: High
+              target:
+                entity_id: input_select.pool_mode
   - badges: []
     path: default_view
     icon: 'mdi:message-alert'
