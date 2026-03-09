@@ -20,6 +20,20 @@ template:
           {{ [calc, tmax] | min }}
         unit_of_measurement: min
         icon: mdi:timer-check
+      - name: "ZLT 75 run duration"
+        unique_id: raspipool_zlt_75_run_duration
+        state: >-
+          {% set T = states('sensor.pool_water_temperature') | float(0) %}
+          {% set mode = states('input_select.pool_mode') %}
+          {% set C =
+              17.5 if mode == 'Low' else
+              44.8 if mode == 'Medium' else
+              61.1
+          %}
+          {% set raw = (T - 14) * C + 47.6 %}
+          {{ [0, raw] | max | round(1) }}
+        unit_of_measurement: min
+        icon: mdi:timer-cog
 
 sensor:
   - platform: history_stats

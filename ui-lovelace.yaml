@@ -280,6 +280,10 @@ views:
             name: Cible désinfection (ppm)
           - entity: sensor.e_fc
             name: Désinfection actuelle (ppm)
+          - entity: input_select.pool_mode
+            name: Mode désinfection ZLT 75
+          - entity: sensor.zlt_75_run_duration
+            name: Durée calculée ZLT 75 (min)
           - entity: input_number.bleach_inject
             name: Quantité à produire (g)
           - entity: sensor.duree_marche_cellule
@@ -296,6 +300,41 @@ views:
             name: Prochaine injection acide (ml)
         type: entities
         show_header_toggle: false
+      - type: horizontal-stack
+        cards:
+          - type: button
+            entity: input_select.pool_mode
+            name: Low
+            icon: mdi:water-percent
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Low
+              target:
+                entity_id: input_select.pool_mode
+          - type: button
+            entity: input_select.pool_mode
+            name: Medium
+            icon: mdi:water-check
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: Medium
+              target:
+                entity_id: input_select.pool_mode
+          - type: button
+            entity: input_select.pool_mode
+            name: High
+            icon: mdi:water-alert
+            tap_action:
+              action: call-service
+              service: input_select.select_option
+              data:
+                option: High
+              target:
+                entity_id: input_select.pool_mode
   - badges:
       - sun.sun
       - sensor.time

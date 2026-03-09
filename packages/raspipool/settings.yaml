@@ -50,6 +50,16 @@ input_number:
     icon: mdi:timer-sand
     mode: box
 
+input_select:
+  pool_mode:
+    name: Mode désinfection ZLT 75
+    icon: mdi:pool
+    options:
+      - Low
+      - Medium
+      - High
+    initial: Medium
+
 
 input_boolean:
   turbo:
