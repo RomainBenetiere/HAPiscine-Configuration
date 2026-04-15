@@ -3,11 +3,28 @@ publish_attributes: true         # ok
 publish_timestamps: true         # optionnel, si tu veux aussi publier les timestamps
 include:
   entities:
-    - sensor.pump_state
-    - switch.pump
-    - switch.turbo
+    # --- Sondes Brutes (existantes) ---
     - sensor.ezo_temperature
     - sensor.ezo_ph
     - sensor.ezo_orp
+    # --- Interrupteurs de contrôle (existants) ---
+    - switch.pump
+    - switch.turbo
     - switch.ph
     - switch.orp
+    - sensor.pump_state
+    
+    # --- À AJOUTER POUR LE DASHBOARD ---
+    # Badges
+    - sensor.e_fc
+    - sensor.cycle_pool
+    # Jauges principales (Valeurs lissées)
+    - sensor.pool_water_temperature
+    - sensor.ph_mean
+    - sensor.orp_mean
+    # Fournitures
+    - sensor.remain_cycles
+    - sensor.muriatic_tank
+    # Alertes hardware
+    - binary_sensor.muriatic
+    - binary_sensor.bleach
