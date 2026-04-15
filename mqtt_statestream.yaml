@@ -3,28 +3,84 @@ publish_attributes: true         # ok
 publish_timestamps: true         # optionnel, si tu veux aussi publier les timestamps
 include:
   entities:
-    # --- Sondes Brutes (existantes) ---
-    - sensor.ezo_temperature
-    - sensor.ezo_ph
+    # --- Binary Sensors ---
+    - binary_sensor.bleach
+    - binary_sensor.flowd
+    - binary_sensor.muriatic
+    - binary_sensor.power_excess
+    - binary_sensor.power_shortage
+    # --- Input Booleans ---
+    - input_boolean.lock_bleach
+    - input_boolean.lock_muriatic
+    - input_boolean.notify_seasson
+    - input_boolean.robot_demarrage_solaire
+    - input_boolean.sim_flowd
+    - input_boolean.sim_orp_pump
+    - input_boolean.sim_ph_pump
+    - input_boolean.sim_pump
+    - input_boolean.sim_turbo
+    - input_boolean.simulation_mode
+    - input_boolean.turbo
+    # --- Input Datetimes ---
+    - input_datetime.cummulated_flow_start
+    - input_datetime.cycle_start
+    - input_datetime.recirculation
+    - input_datetime.robot_cycle_start
+    - input_datetime.second_cycle_start
+    # --- Input Numbers ---
+    - input_number.bleach_concentration
+    - input_number.bleach_inject
+    - input_number.bleach_speed
+    - input_number.capacity
+    - input_number.cycle
+    - input_number.e_fc_adjust
+    - input_number.fc_target
+    - input_number.muriatic_concentration
+    - input_number.muriatic_inject
+    - input_number.muriatic_speed
+    - input_number.muriatic_tank
+    - input_number.notify_bleach_high
+    - input_number.notify_cycles
+    - input_number.notify_muriatic_high
+    - input_number.notify_muriatic_tank
+    - input_number.out_of_order
+    - input_number.ph_target
+    - input_number.pump_on_for
+    - input_number.quality
+    - input_number.robot_solar_max_minutes
+    - input_number.second_cycle
+    - input_number.sim_orp
+    - input_number.sim_outdoor_temperature
+    - input_number.sim_ph
+    - input_number.sim_power_consumption
+    - input_number.sim_power_production
+    - input_number.sim_temperature
+    - input_number.turbo
+    # --- Input Selects ---
+    - input_select.pool_mode
+    # --- Sensors ---
+    - sensor.consommation_electrique
+    - sensor.cummulated_flow_high
+    - sensor.cummulated_flow_low
+    - sensor.cycle_pool
+    - sensor.duree_marche_cellule
+    - sensor.duree_marche_cellule_effective
+    - sensor.e_fc
     - sensor.ezo_orp
-    # --- Interrupteurs de contrôle (existants) ---
+    - sensor.ezo_ph
+    - sensor.ezo_temperature
+    - sensor.muriatic_tank
+    - sensor.net_power
+    - sensor.orp_mean
+    - sensor.outdoor_temperature
+    - sensor.ph_mean
+    - sensor.pool_water_temperature
+    - sensor.production_solaire
+    - sensor.pump_state
+    - sensor.remain_cycles
+    - sensor.zlt_75_run_duration
+    # --- Switches ---
+    - switch.orp
+    - switch.ph
     - switch.pump
     - switch.turbo
-    - switch.ph
-    - switch.orp
-    - sensor.pump_state
-    
-    # --- À AJOUTER POUR LE DASHBOARD ---
-    # Badges
-    - sensor.e_fc
-    - sensor.cycle_pool
-    # Jauges principales (Valeurs lissées)
-    - sensor.pool_water_temperature
-    - sensor.ph_mean
-    - sensor.orp_mean
-    # Fournitures
-    - sensor.remain_cycles
-    - sensor.muriatic_tank
-    # Alertes hardware
-    - binary_sensor.muriatic
-    - binary_sensor.bleach
