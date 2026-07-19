@@ -10,8 +10,8 @@ switch:
       27: Pump HW
       17: Turbo HW
       21: ph hw
-      20: electrolyseur
-      16: javel
+      20: orp hw
+      16: javel hw
     invert_logic: true
 
 input_boolean:
@@ -34,7 +34,7 @@ template:
       - name: "Bleach"
         unique_id: raspipool_bleach
         device_class: plug
-        state: "{{ is_state('switch.electrolyseur', 'on') }}"
+        state: "{{ is_state('switch.orp', 'on') }}"
         icon: >-
           {% if is_state('input_boolean.lock_bleach', 'on') %}
             mdi:lock

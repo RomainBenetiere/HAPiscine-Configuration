@@ -429,5 +429,6 @@ views:
             name: Sim Robot
           - entity: input_boolean.sim_ph_pump
           - entity: input_boolean.sim_orp_pump
+          - entity: input_boolean.sim_javel_pump
           - entity: input_boolean.sim_flowd
 

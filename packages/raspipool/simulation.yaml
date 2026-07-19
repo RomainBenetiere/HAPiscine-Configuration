@@ -12,6 +12,8 @@ input_boolean:
     name: Sim pompe ORP
   sim_flowd:
     name: Sim débit
+  sim_javel_pump:
+    name: Sim pompe Javel
 
 input_number:
   sim_ph:
@@ -268,3 +270,39 @@ template:
               - service: switch.turn_off
                 target:
                   entity_id: switch.orp_hw
+      - name: "Javel"
+        unique_id: raspipool_switch_javel
+        state: >-
+          {% if is_state('input_boolean.simulation_mode', 'on') %}
+            {{ is_state('input_boolean.sim_javel_pump', 'on') }}
+          {% else %}
+            {{ is_state('switch.javel_hw', 'on') }}
+          {% endif %}
+        turn_on:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_on
+                    target:
+                      entity_id: input_boolean.sim_javel_pump
+            default:
+              - service: switch.turn_on
+                target:
+                  entity_id: switch.javel_hw
+        turn_off:
+          - choose:
+              - conditions:
+                  - condition: state
+                    entity_id: input_boolean.simulation_mode
+                    state: 'on'
+                sequence:
+                  - service: input_boolean.turn_off
+                    target:
+                      entity_id: input_boolean.sim_javel_pump
+            default:
+              - service: switch.turn_off
+                target:
+                  entity_id: switch.javel_hw
