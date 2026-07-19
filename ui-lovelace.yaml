@@ -238,7 +238,7 @@ views:
                   name: Durée de marche (prochaine)
                 - entity: sensor.javel_vol_last_24h
                   name: Volume injecté (dernières 24h)
-                - entity: switch.javel_hw
+                - entity: switch.javel
                   name: Pompe Javel (ON/OFF)
                   secondary_info: last-changed
                 - entity: input_boolean.lock_javel
