@@ -17,14 +17,14 @@ switch:
 input_boolean:
   lock_bleach:
     name: "Verrouillage électrolyseur"
-    initial: off
+    initial: false
     icon: mdi:lock
   lock_muriatic:
-    initial: off
+    initial: false
     icon: mdi:lock
   lock_javel:
     name: "Verrouillage pompe Javel"
-    initial: off
+    initial: false
     icon: mdi:lock
 
 
