@@ -329,6 +329,15 @@ automation:
           title: "Injection Javel ({{ states('sensor.javel_run_duration') | float(0) | round(0) | int }} min — {{ states('sensor.javel_volume_ml') | float(0) | round(0) | int }} mL)"
           message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
           notification_id: "pool_javel_start"
+      - delay: 00:{{ states('input_number.bleach_delay_effective') | int(0) }}:00
+      - entity_id: switch.javel
+        service: switch.turn_off
+      - service: persistent_notification.create
+        data:
+          title: "Fin injection Javel"
+          message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
+          notification_id: "pool_javel_end"
+    # === Mode Désactivé : rien à faire ===
 
 # --- Mise à jour du niveau de cuve Javel chaque heure ---
 - alias: javel_every_hour
@@ -358,14 +367,5 @@ automation:
       title: "Cuve Javel basse ({{ states('input_number.javel_tank') | float(0) }} L)!!!"
       message: "@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_javel_tank_low"
-      - delay: 00:{{ states('input_number.bleach_delay_effective') | int(0) }}:00
-      - entity_id: switch.javel
-        service: switch.turn_off
-      - service: persistent_notification.create
-        data:
-          title: "Fin injection Javel"
-          message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
-          notification_id: "pool_javel_end"
-    # === Mode Désactivé : rien à faire ===
 
 
