@@ -197,24 +197,52 @@ views:
                 name: Verrouiller pompe
             type: entities
             show_header_toggle: false
-          - entities:
-              - label: Électrolyseur au sel (ORP)
-                type: section
-              - entity: input_number.bleach_concentration
-                name: Rendement cellule (%)
-              - entity: input_number.bleach_speed
-                name: Débit de génération (g/h)
-              - entity: sensor.duree_marche_cellule
-                name: Durée de marche (prochaine)
-              - entity: sensor.duree_marche_cellule_effective
-                name: Temps de marche pris en compte (min)
-              - entity: switch.orp
-                name: Cellule (ON/OFF)
-                secondary_info: last-changed
-              - entity: input_boolean.lock_bleach
-                name: Verrouiller électrolyseur
-            type: entities
-            show_header_toggle: false
+          - type: conditional
+            conditions:
+              - entity: input_select.disinfection_mode
+                state_not: "Javel"
+            card:
+              type: entities
+              show_header_toggle: false
+              entities:
+                - label: Électrolyseur au sel (ORP)
+                  type: section
+                - entity: input_number.bleach_concentration
+                  name: Rendement cellule (%)
+                - entity: input_number.bleach_speed
+                  name: Débit de génération (g/h)
+                - entity: sensor.duree_marche_cellule
+                  name: Durée de marche (prochaine)
+                - entity: sensor.duree_marche_cellule_effective
+                  name: Temps de marche pris en compte (min)
+                - entity: switch.orp
+                  name: Cellule (ON/OFF)
+                  secondary_info: last-changed
+                - entity: input_boolean.lock_bleach
+                  name: Verrouiller électrolyseur
+          - type: conditional
+            conditions:
+              - entity: input_select.disinfection_mode
+                state: "Javel"
+            card:
+              type: entities
+              show_header_toggle: false
+              entities:
+                - label: Pompe doseuse (Javel)
+                  type: section
+                - entity: input_number.javel_concentration
+                  name: Concentration Javel (%)
+                - entity: input_number.javel_pump_flow
+                  name: Débit de la pompe (mL/min)
+                - entity: sensor.javel_run_duration
+                  name: Durée de marche (prochaine)
+                - entity: sensor.javel_vol_last_24h
+                  name: Volume injecté (dernières 24h)
+                - entity: switch.javel_hw
+                  name: Pompe Javel (ON/OFF)
+                  secondary_info: last-changed
+                - entity: input_boolean.lock_javel
+                  name: Verrouiller pompe Javel
   - badges: []
     path: default_view
     icon: 'mdi:message-alert'
