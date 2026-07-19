@@ -274,8 +274,10 @@ views:
         theme: default
       - title: Réglages chimie
         entities:
-          - label: Désinfection (électrolyseur au sel)
+          - label: Désinfection
             type: section
+          - entity: input_select.disinfection_mode
+            name: Mode de désinfection
           - entity: input_number.fc_target
             name: Cible désinfection (ppm)
           - entity: sensor.e_fc
