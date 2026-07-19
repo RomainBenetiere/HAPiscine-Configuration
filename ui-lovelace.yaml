@@ -68,36 +68,26 @@ views:
           - title: Fournitures
             type: horizontal-stack
             cards:
-              - type: conditional
-                conditions:
-                  - entity: input_select.disinfection_mode
-                    state_not: "Javel"
-                card:
-                  max: 20
-                  min: 0
-                  theme: default
-                  entity: sensor.remain_cycles
-                  severity:
-                    green: 15
-                    red: 5
-                    yellow: 10
-                  name: Cycles restants
-                  type: gauge
-              - type: conditional
-                conditions:
-                  - entity: input_select.disinfection_mode
-                    state: "Javel"
-                card:
-                  max: 30
-                  min: 0
-                  theme: default
-                  entity: sensor.javel_tank
-                  severity:
-                    green: 15
-                    red: 3
-                    yellow: 6
-                  name: Cuve Javel
-                  type: gauge
+              - max: 20
+                min: 0
+                theme: default
+                entity: sensor.remain_cycles
+                severity:
+                  green: 15
+                  red: 5
+                  yellow: 10
+                name: Cycles restants
+                type: gauge
+              - max: 30
+                min: 0
+                theme: default
+                entity: sensor.javel_tank
+                severity:
+                  green: 15
+                  red: 3
+                  yellow: 6
+                name: Cuve Javel
+                type: gauge
               - max: 10
                 min: 0
                 theme: default
@@ -253,9 +243,9 @@ views:
                 name: Concentration (%)
               - entity: input_number.muriatic_speed
                 name: Débit injection (mL/min)
-              - entity: input_number.muriatic_delay_effective
+              - entity: sensor.muriatic_run_duration
                 name: Durée de marche (prochaine)
-              - entity: input_number.muriatic_inject
+              - entity: sensor.muriatic_volume_ml
                 name: Volume à injecter (prochain)
               - entity: sensor.muriatic_vol_last_24h
                 name: Volume injecté (dernières 24h)

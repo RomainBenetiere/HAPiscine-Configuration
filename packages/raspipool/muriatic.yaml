@@ -3,7 +3,7 @@ template:
       - name: "Muriatic tank"
         unique_id: raspipool_muriatic_tank
         state: "{{ states('input_number.muriatic_tank') | float(0) | round(2) }}"
-      - name: "Volume acide injecté 24h"
+      - name: "Muriatic vol last 24h"
         unique_id: raspipool_muriatic_vol_last_24h
         state: >-
           {% set hours = states('sensor.muriatic_on_last_24h') | float(0) %}
@@ -11,6 +11,16 @@ template:
           {{ (hours * 60 * flow) | round(0) }}
         unit_of_measurement: mL
         icon: mdi:cup-water
+      - name: "Muriatic volume ml"
+        unique_id: raspipool_muriatic_volume_ml
+        state: "{{ states('input_number.muriatic_inject') | float(0) | round(1) }}"
+        unit_of_measurement: mL
+        icon: mdi:beaker-outline
+      - name: "Muriatic run duration"
+        unique_id: raspipool_muriatic_run_duration
+        state: "{{ states('input_number.muriatic_delay_effective') | float(0) | round(1) }}"
+        unit_of_measurement: min
+        icon: mdi:timer-outline
 
 sensor:
   - platform: history_stats
@@ -46,7 +56,7 @@ input_number:
     min: 0
     max: 30
     step: 0.1
-    unit_of_measurement: 'l'
+    unit_of_measurement: 'L'
     icon: mdi:blood-bag
     mode: box
   muriatic_concentration:
@@ -68,7 +78,7 @@ input_number:
     min: 0
     max: 5
     step: 0.1
-    unit_of_measurement: 'l/48h'
+    unit_of_measurement: 'L/48h'
     icon: mdi:flask
   notify_muriatic_tank:
     name: "Notifier niveau réservoir acide (l)"
