@@ -299,7 +299,7 @@ views:
           - type: conditional
             conditions:
               - entity: input_select.disinfection_mode
-                state: "Electrolyseur"
+                state_not: "Désactivé"
             row:
               entity: input_number.bleach_inject
               name: Quantité à produire (g)
@@ -313,7 +313,14 @@ views:
           - type: conditional
             conditions:
               - entity: input_select.disinfection_mode
-                state: "Electrolyseur"
+                state: "Javel"
+            row:
+              entity: sensor.javel_run_duration
+              name: Durée marche Javel (min)
+          - type: conditional
+            conditions:
+              - entity: input_select.disinfection_mode
+                state_not: "Désactivé"
             row:
               entity: input_number.e_fc_adjust
               name: Ajustement ±% désinfection
