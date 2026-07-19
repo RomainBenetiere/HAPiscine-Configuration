@@ -11,6 +11,7 @@ include:
     - binary_sensor.power_shortage
     # --- Input Booleans ---
     - input_boolean.lock_bleach
+    - input_boolean.lock_javel
     - input_boolean.lock_muriatic
     - input_boolean.notify_seasson
     - input_boolean.robot_demarrage_solaire
@@ -44,6 +45,10 @@ include:
     - input_number.notify_muriatic_high
     - input_number.notify_muriatic_tank
     - input_number.out_of_order
+    - input_number.javel_pump_flow
+    - input_number.javel_concentration
+    - input_number.javel_max_daily_vol
+    - input_number.javel_max_daily_time
     - input_number.ph_target
     - input_number.pump_on_for
     - input_number.quality
@@ -57,6 +62,7 @@ include:
     - input_number.sim_temperature
     - input_number.turbo
     # --- Input Selects ---
+    - input_select.disinfection_mode
     - input_select.pool_mode
     # --- Sensors ---
     - sensor.consommation_electrique
@@ -79,8 +85,15 @@ include:
     - sensor.pump_state
     - sensor.remain_cycles
     - sensor.zlt_75_run_duration
+    - sensor.javel_on_last_24h
+    - sensor.javel_volume_ml
+    - sensor.javel_run_duration
+    - sensor.javel_vol_last_24h
     # --- Switches ---
-    - switch.orp
+    - switch.electrolyseur
     - switch.ph
     - switch.pump
     - switch.turbo
+    - switch.javel
+    # --- Binary Sensors (ajoutés) ---
+    - binary_sensor.javel

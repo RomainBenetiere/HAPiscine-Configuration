@@ -317,7 +317,9 @@ automation:
   - service: switch.turn_off
     entity_id: switch.ph
   - service: switch.turn_off
-    entity_id: switch.orp
+    entity_id: switch.electrolyseur
+  - service: switch.turn_off
+    entity_id: switch.javel
 
 # Toutes les 2 min (pompe on depuis 5 min) : rafraîchit EZO, solaire, remain_cycles, e_fc et variables simulées
 - alias: every_2_min
@@ -354,6 +356,9 @@ automation:
         - sensor.duree_marche_cellule
         - sensor.duree_marche_cellule_effective
         - sensor.time_salt_max
+        - sensor.javel_volume_ml
+        - sensor.javel_run_duration
+        - sensor.javel_vol_last_24h
 
 - alias: 'every_5_min'
   id: 'surpressorcount'

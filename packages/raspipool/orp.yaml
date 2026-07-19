@@ -23,7 +23,7 @@ automation:
   initial_state: true
   trigger:
   - platform: state
-    entity_id: switch.orp
+    entity_id: switch.electrolyseur
     to: 'on'
   condition:
   - condition: state
@@ -31,7 +31,7 @@ automation:
     state: 'off'
   action:
   - service: switch.turn_off
-    entity_id: switch.orp
+    entity_id: switch.electrolyseur
 
 - alias: orp_bad
   id: '1559149493756'
@@ -48,5 +48,21 @@ automation:
       notification_id: "pool_orp_probe_bad"
   - service: automation.turn_off
     entity_id: automation.orp_bad
+
+# Sécurité : coupe la pompe Javel si la pompe de filtration est éteinte
+- alias: javel_start
+  id: 'javel_safety_no_pump'
+  initial_state: true
+  trigger:
+  - platform: state
+    entity_id: switch.javel
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: switch.pump
+    state: 'off'
+  action:
+  - service: switch.turn_off
+    entity_id: switch.javel
 
 

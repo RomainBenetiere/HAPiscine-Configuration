@@ -18,7 +18,7 @@ recorder:
       - sensor.openweathermap_condition
       - sensor.openweathermap_temperature
       - switch.ph
-      - switch.orp
+      - switch.electrolyseur
       - sensor.e_fc
       - input_number.cycle
       - sensor.cycle_pool
@@ -34,4 +34,10 @@ recorder:
       - binary_sensor.power_shortage
       - input_number.bleach_delay_effective
       - input_number.muriatic_delay_effective
+      - switch.javel
+      - sensor.javel_on_last_24h
+      - sensor.javel_volume_ml
+      - sensor.javel_run_duration
+      - sensor.javel_vol_last_24h
+      - input_select.disinfection_mode
 

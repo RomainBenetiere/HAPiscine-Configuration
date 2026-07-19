@@ -10,7 +10,8 @@ switch:
       27: Pump HW
       17: Turbo HW
       21: ph hw
-      20: orp hw
+      20: electrolyseur
+      16: javel
     invert_logic: true
 
 input_boolean:
@@ -21,6 +22,10 @@ input_boolean:
   lock_muriatic:
     initial: off
     icon: mdi:lock
+  lock_javel:
+    name: "Verrouillage pompe Javel"
+    initial: off
+    icon: mdi:lock
 
 
 # entity_id doit rester binary_sensor.bleach (dérivé du name). Renommer en "Électrolyseur" dans Paramètres > Entités si besoin.
@@ -29,7 +34,7 @@ template:
       - name: "Bleach"
         unique_id: raspipool_bleach
         device_class: plug
-        state: "{{ is_state('switch.orp', 'on') }}"
+        state: "{{ is_state('switch.electrolyseur', 'on') }}"
         icon: >-
           {% if is_state('input_boolean.lock_bleach', 'on') %}
             mdi:lock
@@ -45,6 +50,16 @@ template:
             mdi:lock
           {% else %}
             mdi:power-plug
+          {% endif %}
+      - name: "Javel"
+        unique_id: raspipool_javel
+        device_class: plug
+        state: "{{ is_state('switch.javel', 'on') }}"
+        icon: >-
+          {% if is_state('input_boolean.lock_javel', 'on') %}
+            mdi:lock
+          {% else %}
+            mdi:bottle-tonic
           {% endif %}
 
 binary_sensor:
