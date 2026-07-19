@@ -23,7 +23,7 @@ automation:
   initial_state: true
   trigger:
   - platform: state
-    entity_id: switch.electrolyseur
+    entity_id: switch.orp
     to: 'on'
   condition:
   - condition: state
@@ -31,7 +31,7 @@ automation:
     state: 'off'
   action:
   - service: switch.turn_off
-    entity_id: switch.electrolyseur
+    entity_id: switch.orp
 
 - alias: orp_bad
   id: '1559149493756'

@@ -317,7 +317,7 @@ automation:
   - service: switch.turn_off
     entity_id: switch.ph
   - service: switch.turn_off
-    entity_id: switch.electrolyseur
+    entity_id: switch.orp
   - service: switch.turn_off
     entity_id: switch.javel
 

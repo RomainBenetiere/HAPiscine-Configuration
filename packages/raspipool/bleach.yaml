@@ -1,7 +1,7 @@
 # Désinfection : Électrolyseur au sel OU pompe doseuse de Javel.
 # Le mode est choisi par input_select.disinfection_mode (Electrolyseur / Javel / Désactivé).
 #
-# Électrolyseur (switch.electrolyseur) :
+# Électrolyseur (switch.orp) :
 #   ON/OFF. Unités = grammes de chlore (g) et g/h (ex. Zelia ZLT 75 = 15 g/h).
 #   Quantité (g) = f(capacité, écart cible-actuel, rendement %).
 #   Durée effective = min(60×q/r, time_salt_max).
@@ -79,7 +79,7 @@ sensor:
   - platform: history_stats
     name: bleach_on_last_hour
     unique_id: raspipool_bleach_on_last_hour
-    entity_id: switch.electrolyseur
+    entity_id: switch.orp
     state: 'on'
     type: time
     end: '{{now().replace(minute=0).replace(second=0)}}'
@@ -88,7 +88,7 @@ sensor:
   - platform: history_stats
     name: bleach_on_last_48h
     unique_id: raspipool_bleach_on_last_48h
-    entity_id: switch.electrolyseur
+    entity_id: switch.orp
     state: 'on'
     type: time
     end: '{{now()}}'
@@ -155,7 +155,7 @@ automation:
     value_template: "{% if states('input_number.notify_bleach_high') | float(0) > 0 and states('sensor.bleach_on_last_48h') | float(0) > states('input_number.notify_bleach_high') | float(0) %}true{% endif %}"
   condition: []
   action:
-  - entity_id: switch.electrolyseur
+  - entity_id: switch.orp
     service: switch.turn_off
   - entity_id: input_boolean.lock_bleach
     service: input_boolean.turn_on
@@ -247,7 +247,7 @@ automation:
         value_template: "{{ states('input_number.bleach_inject') | float(0) / states('input_number.capacity') | float(1) }}"
         above: 0.1
         below: 15.0
-      - entity_id: switch.electrolyseur
+      - entity_id: switch.orp
         service: switch.turn_on
       - service: input_number.set_value
         data:
@@ -259,7 +259,7 @@ automation:
           message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
           notification_id: "pool_electrolyzer_start"
       - delay: 00:{{ states('input_number.bleach_delay_effective') | int(0) }}:00
-      - entity_id: switch.electrolyseur
+      - entity_id: switch.orp
         service: switch.turn_off
       - service: persistent_notification.create
         data:

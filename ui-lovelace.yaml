@@ -88,39 +88,82 @@ views:
                   yellow: 3
                 name: Cuve acide
                 type: gauge
-          - show_name: true
-            entities:
-              - entity: switch.pump
-                name: Pompe
-                hold_action:
-                  action: toggle
-              - entity: switch.turbo
-                name: Robot
-                hold_action:
-                  action: toggle
-              - entity: binary_sensor.muriatic
-                name: Acide
-                hold_action:
-                  action: call-service
-                  service: switch.toggle
-                  service_data:
-                    entity_id: switch.ph
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/2
-              - entity: binary_sensor.bleach
-                name: Électrolyseur
-                hold_action:
-                  action: call-service
-                  service: switch.toggle
-                  service_data:
-                    entity_id: switch.orp
-                tap_action:
-                  action: navigate
-                  navigation_path: /lovelace/2
-            type: glance
-            show_state: false
-            show_icon: true
+          - type: conditional
+            conditions:
+              - entity: input_select.disinfection_mode
+                state_not: "Javel"
+            card:
+              show_name: true
+              entities:
+                - entity: switch.pump
+                  name: Pompe
+                  hold_action:
+                    action: toggle
+                - entity: switch.turbo
+                  name: Robot
+                  hold_action:
+                    action: toggle
+                - entity: binary_sensor.muriatic
+                  name: Acide
+                  hold_action:
+                    action: call-service
+                    service: switch.toggle
+                    service_data:
+                      entity_id: switch.ph
+                  tap_action:
+                    action: navigate
+                    navigation_path: /lovelace/2
+                - entity: binary_sensor.bleach
+                  name: Électrolyseur
+                  hold_action:
+                    action: call-service
+                    service: switch.toggle
+                    service_data:
+                      entity_id: switch.orp
+                  tap_action:
+                    action: navigate
+                    navigation_path: /lovelace/2
+              type: glance
+              show_state: false
+              show_icon: true
+          - type: conditional
+            conditions:
+              - entity: input_select.disinfection_mode
+                state: "Javel"
+            card:
+              show_name: true
+              entities:
+                - entity: switch.pump
+                  name: Pompe
+                  hold_action:
+                    action: toggle
+                - entity: switch.turbo
+                  name: Robot
+                  hold_action:
+                    action: toggle
+                - entity: binary_sensor.muriatic
+                  name: Acide
+                  hold_action:
+                    action: call-service
+                    service: switch.toggle
+                    service_data:
+                      entity_id: switch.ph
+                  tap_action:
+                    action: navigate
+                    navigation_path: /lovelace/2
+                - entity: binary_sensor.javel
+                  name: Pompe Javel
+                  hold_action:
+                    action: call-service
+                    service: switch.toggle
+                    service_data:
+                      entity_id: switch.javel
+                  tap_action:
+                    action: navigate
+                    navigation_path: /lovelace/2
+              type: glance
+              show_state: false
+              show_icon: true
           - title: Production solaire
             type: entities
             entities:
@@ -187,11 +230,11 @@ views:
               - entity: input_number.muriatic_tank
                 name: Niveau cuve
               - entity: input_number.muriatic_concentration
-                name: Concentration
+                name: Concentration (%)
               - entity: input_number.muriatic_speed
-                name: Débit injection
+                name: Débit injection (mL/min)
               - entity: switch.ph
-                name: Pompe injection
+                name: Pompe injection (ON/OFF)
                 secondary_info: last-changed
               - entity: input_boolean.lock_muriatic
                 name: Verrouiller pompe
@@ -231,18 +274,20 @@ views:
                 - label: Pompe doseuse (Javel)
                   type: section
                 - entity: input_number.javel_concentration
-                  name: Concentration Javel (%)
+                  name: Concentration (%)
                 - entity: input_number.javel_pump_flow
-                  name: Débit de la pompe (mL/min)
+                  name: Débit injection (mL/min)
                 - entity: sensor.javel_run_duration
                   name: Durée de marche (prochaine)
+                - entity: sensor.javel_volume_ml
+                  name: Volume à injecter (prochain)
                 - entity: sensor.javel_vol_last_24h
                   name: Volume injecté (dernières 24h)
                 - entity: switch.javel
-                  name: Pompe Javel (ON/OFF)
+                  name: Pompe injection (ON/OFF)
                   secondary_info: last-changed
                 - entity: input_boolean.lock_javel
-                  name: Verrouiller pompe Javel
+                  name: Verrouiller pompe
   - badges: []
     path: default_view
     icon: 'mdi:message-alert'

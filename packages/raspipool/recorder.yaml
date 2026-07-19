@@ -18,7 +18,7 @@ recorder:
       - sensor.openweathermap_condition
       - sensor.openweathermap_temperature
       - switch.ph
-      - switch.electrolyseur
+      - switch.orp
       - sensor.e_fc
       - input_number.cycle
       - sensor.cycle_pool
