@@ -4,7 +4,7 @@ template:
         unique_id: raspipool_muriatic_tank
         state: "{{ states('input_number.muriatic_tank') | float(0) | round(2) }}"
       - name: "Muriatic vol last 24h"
-        unique_id: raspipool_muriatic_vol_last_24h
+        unique_id: raspipool_muriatic_vol_last_24h_new
         state: >-
           {% set hours = states('sensor.muriatic_on_last_24h') | float(0) %}
           {% set flow = states('input_number.muriatic_speed') | float(0) %}
