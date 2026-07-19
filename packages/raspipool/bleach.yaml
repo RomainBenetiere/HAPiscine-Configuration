@@ -74,6 +74,9 @@ template:
           {{ (hours * 60 * flow) | round(0) }}
         unit_of_measurement: mL
         icon: mdi:cup-water
+      - name: "Javel tank"
+        unique_id: raspipool_javel_tank
+        state: "{{ states('input_number.javel_tank') | float(0) | round(2) }}"
 
 sensor:
   - platform: history_stats
@@ -102,6 +105,15 @@ sensor:
     type: time
     end: '{{now()}}'
     duration: 24:00:00
+
+  - platform: history_stats
+    name: javel_on_last_hour
+    unique_id: raspipool_javel_on_last_hour
+    entity_id: switch.javel
+    state: 'on'
+    type: time
+    end: '{{now().replace(minute=0).replace(second=0)}}'
+    duration: 01:00:00
 
 input_number:
   bleach_concentration:
@@ -143,6 +155,21 @@ input_number:
     unit_of_measurement: "min"
     icon: mdi:timer-check
     mode: box
+  javel_tank:
+    name: "Niveau cuve Javel"
+    min: 0
+    max: 30
+    step: 0.1
+    unit_of_measurement: 'L'
+    icon: mdi:blood-bag
+    mode: box
+  notify_javel_tank:
+    name: "Notifier niveau réservoir Javel (L)"
+    min: 0
+    max: 5
+    step: 0.5
+    unit_of_measurement: 'L'
+    icon: mdi:flask-empty
 
 
 automation:
@@ -302,6 +329,35 @@ automation:
           title: "Injection Javel ({{ states('sensor.javel_run_duration') | float(0) | round(0) | int }} min — {{ states('sensor.javel_volume_ml') | float(0) | round(0) | int }} mL)"
           message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
           notification_id: "pool_javel_start"
+
+# --- Mise à jour du niveau de cuve Javel chaque heure ---
+- alias: javel_every_hour
+  id: 'javel_tank_hourly_update'
+  initial_state: true
+  trigger:
+  - platform: time_pattern
+    minutes: 1
+  condition: []
+  action:
+  - service: input_number.set_value
+    data:
+      entity_id: input_number.javel_tank
+      value: "{{ (states('input_number.javel_tank') | float(0) - (states('sensor.javel_on_last_hour') | float(0) * states('input_number.javel_pump_flow') | float(0) * 60 / 1000)) | round(2) }}"
+
+# --- Alerte cuve Javel basse ---
+- alias: javel_tank_low
+  id: 'javel_tank_low_alert'
+  initial_state: true
+  trigger:
+    platform: template
+    value_template: "{% if states('input_number.notify_javel_tank') | float(0) > 0 and states('sensor.javel_tank') | float(0) < states('input_number.notify_javel_tank') | float(0) %}true{% endif %}"
+  condition: []
+  action:
+  - service: persistent_notification.create
+    data:
+      title: "Cuve Javel basse ({{ states('input_number.javel_tank') | float(0) }} L)!!!"
+      message: "@{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
+      notification_id: "pool_javel_tank_low"
       - delay: 00:{{ states('input_number.bleach_delay_effective') | int(0) }}:00
       - entity_id: switch.javel
         service: switch.turn_off

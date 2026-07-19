@@ -3,6 +3,14 @@ template:
       - name: "Muriatic tank"
         unique_id: raspipool_muriatic_tank
         state: "{{ states('input_number.muriatic_tank') | float(0) | round(2) }}"
+      - name: "Volume acide injecté 24h"
+        unique_id: raspipool_muriatic_vol_last_24h
+        state: >-
+          {% set hours = states('sensor.muriatic_on_last_24h') | float(0) %}
+          {% set flow = states('input_number.muriatic_speed') | float(0) %}
+          {{ (hours * 60 * flow) | round(0) }}
+        unit_of_measurement: mL
+        icon: mdi:cup-water
 
 sensor:
   - platform: history_stats
@@ -22,6 +30,15 @@ sensor:
     type: time
     end: '{{now()}}'
     duration: 48:00:00
+
+  - platform: history_stats
+    name: muriatic_on_last_24h
+    unique_id: raspipool_muriatic_on_last_24h
+    entity_id: switch.ph
+    state: 'on'
+    type: time
+    end: '{{now()}}'
+    duration: 24:00:00
 
 
 input_number:
