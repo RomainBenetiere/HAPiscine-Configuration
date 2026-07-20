@@ -10,8 +10,8 @@ switch:
       27: Pump HW
       17: Turbo HW
       21: ph hw
-      20: orp hw
-      16: javel hw
+      16: orp hw
+      20: javel hw
     invert_logic: true
 
 input_boolean:

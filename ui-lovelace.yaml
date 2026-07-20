@@ -203,6 +203,8 @@ views:
                 name: Électrolyseur
               - entity: switch.ph
                 name: Acide
+              - entity: switch.javel
+                name: Javel
               - entity: sensor.ph_mean
                 name: pH
               - entity: sensor.orp_mean
@@ -219,6 +221,8 @@ views:
                 name: Électrolyseur
               - entity: switch.ph
                 name: Acide
+              - entity: switch.javel
+                name: Javel
               - entity: sensor.ph_mean
                 name: pH
               - entity: sensor.orp_mean
