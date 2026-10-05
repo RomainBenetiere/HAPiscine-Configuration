@@ -1,18 +1,9 @@
 # Part of raspipool project @ github (by segalion at gmail)
 
-switch:
-  - platform: rpi_gpio
-    ports:
-# gpio_in_BCM_number: name
-# example=> pin#35 = 'gpio.24' = rpi24 = BCM_19 => 19: pump
-# execute 'gpio readall' to see all gpios an theis states in console
-# 17 = Turbo HW : pilote le robot de nettoyage (entity_id switch.turbo_hw / switch.turbo)
-      27: Pump HW
-      17: Turbo HW
-      21: ph hw
-      16: electrolyseur hw
-      20: javel hw
-    invert_logic: true
+# Relais de puissance : voir waveshare.yaml (carte Waveshare Modbus TCP).
+# Les anciennes sorties GPIO (27 pompe, 17 robot, 21 pH, 16 électrolyseur, 20 Javel)
+# ne sont plus utilisées. Mapping actuel : CH1 pompe, CH2 robot, CH3 pH,
+# CH4 électrolyseur, CH5 Javel.
 
 input_boolean:
   lock_bleach:

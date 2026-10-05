@@ -1,0 +1,10 @@
+{
+  "domain": "waveshare_relay",
+  "name": "Waveshare Modbus TCP Relay",
+  "version": "0.1.0",
+  "documentation": "https://www.waveshare.com/wiki/Modbus_POE_ETH_Relay",
+  "codeowners": [],
+  "dependencies": [],
+  "requirements": [],
+  "iot_class": "local_polling"
+}

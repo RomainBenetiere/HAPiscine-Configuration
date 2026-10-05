@@ -16,10 +16,6 @@ include:
     - input_boolean.notify_seasson
     - input_boolean.robot_demarrage_solaire
     - input_boolean.sim_flowd
-    - input_boolean.sim_orp_pump
-    - input_boolean.sim_ph_pump
-    - input_boolean.sim_pump
-    - input_boolean.sim_turbo
     - input_boolean.simulation_mode
     - input_boolean.turbo
     # --- Input Datetimes ---

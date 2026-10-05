@@ -274,20 +274,24 @@ automation:
         value_template: "{{ states('input_number.bleach_inject') | float(0) / states('input_number.capacity') | float(1) }}"
         above: 0.1
         below: 15.0
-      - entity_id: switch.electrolyseur
-        service: switch.turn_on
       - service: input_number.set_value
         data:
           entity_id: input_number.bleach_delay_effective
           value: "{{ states('sensor.duree_marche_cellule_effective') | int(0) }}"
+      # Arrêt par la carte Waveshare (Flash ON ; bail renouvelé au-delà de 54 min).
+      - service: waveshare_relay.run_for
+        data:
+          entity_id: switch.electrolyseur
+          minutes: "{{ states('input_number.bleach_delay_effective') | int(0) }}"
       - service: persistent_notification.create
         data:
           title: "Cellule en marche ({{ [[0, (60 * states('input_number.bleach_inject') | float(0) / states('input_number.bleach_speed') | float(1)) | round(0)] | max, states('sensor.time_salt_max') | int(0)] | min | int(0) }} min)"
           message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
           notification_id: "pool_electrolyzer_start"
-      - delay: 00:{{ states('input_number.bleach_delay_effective') | int(0) }}:00
-      - entity_id: switch.electrolyseur
-        service: switch.turn_off
+      # Attente de séquencement uniquement (le relais ne dépend pas de HA).
+      - wait_template: "{{ is_state('switch.electrolyseur', 'off') }}"
+        timeout: "00:{{ states('input_number.bleach_delay_effective') | int(0) + 2 }}:00"
+        continue_on_timeout: true
       - service: persistent_notification.create
         data:
           title: "Fin marche cellule"
@@ -318,20 +322,24 @@ automation:
         value_template: >-
           {{ (states('sensor.javel_on_last_24h') | float(0) * 60 + states('sensor.javel_run_duration') | float(0))
              < states('input_number.javel_max_daily_time') | float(60) }}
-      - entity_id: switch.javel
-        service: switch.turn_on
       - service: input_number.set_value
         data:
           entity_id: input_number.bleach_delay_effective
           value: "{{ states('sensor.javel_run_duration') | float(0) | round(0) | int }}"
+      # Arrêt par la carte Waveshare (Flash ON matériel).
+      - service: waveshare_relay.run_for
+        data:
+          entity_id: switch.javel
+          minutes: "{{ states('input_number.bleach_delay_effective') | int(0) }}"
       - service: persistent_notification.create
         data:
           title: "Injection Javel ({{ states('sensor.javel_run_duration') | float(0) | round(0) | int }} min — {{ states('sensor.javel_volume_ml') | float(0) | round(0) | int }} mL)"
           message: "{{ now().strftime('%H:%M') }} [{{ now().day }}/{{ now().month }}]"
           notification_id: "pool_javel_start"
-      - delay: 00:{{ states('input_number.bleach_delay_effective') | int(0) }}:00
-      - entity_id: switch.javel
-        service: switch.turn_off
+      # Attente de séquencement uniquement (le relais ne dépend pas de HA).
+      - wait_template: "{{ is_state('switch.javel', 'off') }}"
+        timeout: "00:{{ states('input_number.bleach_delay_effective') | int(0) + 2 }}:00"
+        continue_on_timeout: true
       - service: persistent_notification.create
         data:
           title: "Fin injection Javel"

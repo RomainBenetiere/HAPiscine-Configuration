@@ -1,0 +1,31 @@
+# Relais de puissance : carte Waveshare Modbus POE ETH Relay (8 canaux), Modbus TCP.
+#
+# Chaque ON est limité dans le temps par la CARTE elle-même (commande Flash ON) :
+# si le RPi / HA / le réseau tombe, le relais retombe tout seul.
+#   - durée <= 54 min : une seule commande, la carte coupe à l'échéance ;
+#   - plus long / ON manuel illimité : "bail" de lease_minutes renouvelé par HA ;
+#     en cas de panne, le relais retombe au plus tard à la fin du bail.
+#
+# Services :
+#   waveshare_relay.run_for  {entity_id, minutes | seconds}
+#   waveshare_relay.stop     {entity_id}
+#
+# Sandbox : host/port pointent sur le simulateur Simul-WS (Modbus 5020, UI web 8080).
+# Carte réelle : IP d'usine 192.168.1.200, port 502.
+waveshare_relay:
+  host: 192.168.1.200          # IP de la carte ou de l'hôte Docker Simul-WS (à adapter)
+  port: 5020                   # Simul-WS par défaut ; 502 sur la carte réelle
+  slave: 1
+  scan_interval: 5             # s, lecture des états (FC01)
+  lease_minutes: 10
+  channels:
+    # max_on (min) : limite d'un ON manuel / MQTT (0 = illimité, mais toujours sous bail)
+    # requires     : canal qui doit être ON (la filtration) ; il est prolongé si besoin
+    - {channel: 1, name: Pump}
+    - {channel: 2, name: Turbo}
+    - {channel: 3, name: ph,            max_on: 30,  requires: 1}
+    - {channel: 4, name: Electrolyseur, max_on: 240, requires: 1}
+    - {channel: 5, name: Javel,         max_on: 60,  requires: 1}
+    - {channel: 6, name: Relais CH6}
+    - {channel: 7, name: Relais CH7}
+    - {channel: 8, name: Relais CH8}

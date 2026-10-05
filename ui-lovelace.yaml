@@ -500,11 +500,33 @@ views:
           - entity: input_number.sim_outdoor_temperature
           - entity: input_number.sim_power_consumption
           - entity: input_number.sim_power_production
-          - entity: input_boolean.sim_pump
-          - entity: input_boolean.sim_turbo
-            name: Sim Robot
-          - entity: input_boolean.sim_ph_pump
-          - entity: input_boolean.sim_orp_pump
-          - entity: input_boolean.sim_javel_pump
           - entity: input_boolean.sim_flowd
+      - type: entities
+        title: Relais Waveshare (Modbus TCP)
+        entities:
+          - entity: switch.pump
+            name: CH1 Pompe
+            secondary_info: last-changed
+          - entity: switch.turbo
+            name: CH2 Robot
+            secondary_info: last-changed
+          - entity: switch.ph
+            name: CH3 Acide (pH)
+            secondary_info: last-changed
+          - entity: switch.electrolyseur
+            name: CH4 Électrolyseur
+            secondary_info: last-changed
+          - entity: switch.javel
+            name: CH5 Javel
+            secondary_info: last-changed
+          - entity: switch.relais_ch6
+            name: CH6 (réserve)
+          - entity: switch.relais_ch7
+            name: CH7 (réserve)
+          - entity: switch.relais_ch8
+            name: CH8 (réserve)
+      # Interface web du simulateur Simul-WS (adapter l'IP comme dans waveshare.yaml)
+      - type: iframe
+        url: http://192.168.1.200:8080
+        aspect_ratio: 75%
 

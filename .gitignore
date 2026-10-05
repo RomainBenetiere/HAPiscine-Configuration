@@ -19,3 +19,7 @@ home-assistant.log.*
 ip_bans.yaml
 known_devices.yaml
 .shopping_list.json
+
+# bytecode Python
+__pycache__/
+*.pyc

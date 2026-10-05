@@ -174,20 +174,25 @@ automation:
     value_template: "{{ states('input_number.muriatic_inject') | float(0) / states('input_number.capacity') | float(0) }}"
     above: 5.0
     below: 100.0
-  - entity_id: switch.ph
-    service: switch.turn_on
   - service: input_number.set_value
     data:
       entity_id: input_number.muriatic_delay_effective
       value: "{{ [0, (states('input_number.muriatic_inject') | float(0) / states('input_number.muriatic_speed') | float(1))] | max | round(0) | int }}"
+  # La carte Waveshare coupe elle-même la pompe à l'échéance (Flash ON matériel).
+  - service: waveshare_relay.run_for
+    data:
+      entity_id: switch.ph
+      minutes: "{{ states('input_number.muriatic_delay_effective') | int(0) }}"
   - service: persistent_notification.create
     data:
       title: "Injection acide: ({{ states('input_number.muriatic_inject') }} ml)!!!"
       message: "{{ now().strftime('%H:%M') }}[{{ now().day }}/{{ now().month }}]"
       notification_id: "pool_muriatic_inject_start"
-  - delay: 00:{{ states('input_number.muriatic_delay_effective') | int(0) }}:00
-  - entity_id: switch.ph
-    service: switch.turn_off
+  # Attente de séquencement uniquement (le relais ne dépend pas de HA) :
+  # garde l'acide et le chlore séparés dans cycle_pump_start.
+  - wait_template: "{{ is_state('switch.ph', 'off') }}"
+    timeout: "00:{{ states('input_number.muriatic_delay_effective') | int(0) + 2 }}:00"
+    continue_on_timeout: true
   - service: persistent_notification.create
     data:
       title: "Fin injection acide!!!"

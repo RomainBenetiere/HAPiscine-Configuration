@@ -1,0 +1,43 @@
+run_for:
+  name: Run for a duration
+  description: >-
+    Switch a relay ON for a given time. The Waveshare board switches it OFF by
+    itself (hardware Flash ON timer), even if Home Assistant or the network
+    fails. Runs longer than 54 min use a lease renewed by Home Assistant.
+  fields:
+    entity_id:
+      name: Relay
+      required: true
+      selector:
+        entity:
+          integration: waveshare_relay
+          domain: switch
+          multiple: true
+    minutes:
+      name: Minutes
+      selector:
+        number:
+          min: 0
+          max: 1440
+          step: 0.1
+          unit_of_measurement: min
+    seconds:
+      name: Seconds
+      selector:
+        number:
+          min: 0
+          max: 86400
+          unit_of_measurement: s
+
+stop:
+  name: Stop
+  description: Switch a relay OFF now and cancel its run (dependents are switched OFF too).
+  fields:
+    entity_id:
+      name: Relay
+      required: true
+      selector:
+        entity:
+          integration: waveshare_relay
+          domain: switch
+          multiple: true

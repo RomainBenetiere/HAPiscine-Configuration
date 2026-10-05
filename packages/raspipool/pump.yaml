@@ -161,33 +161,58 @@ automation:
   trigger: []
   condition: []
   action:
-  - entity_id: switch.pump
-    service: switch.turn_on
+  # Pompe pour la durée du 1er cycle : arrêt par la carte Waveshare (bail renouvelé
+  # au-delà de 54 min). Prolongée automatiquement si une injection dure plus longtemps.
+  - service: waveshare_relay.run_for
+    data:
+      entity_id: switch.pump
+      minutes: "{{ [1440, (states('input_number.cycle') | int(0) * (1 - states('input_number.second_cycle') | int(0) / 100))] | min }}"
   - entity_id: automation.ph_bad
     service: automation.turn_on
   - entity_id: automation.orp_bad
     service: automation.turn_on
+  # Attentes de SÉQUENCEMENT (aucun relais ne dépend d'elles) — à valider :
+  # [WAIT-1] stabilisation des mesures pH/ORP après démarrage de la filtration
   - delay: 00:15:00
   - service: automation.trigger
     entity_id: automation.muriatic_set
+  # [WAIT-2] laisse muriatic_set calculer le volume avant l'injection
   - delay: 00:00:10
+  # bloquant jusqu'à la fin de l'injection acide (wait_template dans muriatic_inject)
   - service: automation.trigger
     entity_id: automation.muriatic_inject
+  # [WAIT-3] brassage de l'acide avant de mesurer/injecter le chlore
   - delay: 00:10:00
   - service: automation.trigger
     entity_id: automation.bleach_set
+  # [WAIT-4] laisse bleach_set calculer la quantité avant l'injection
   - delay: 00:00:10
   - service: automation.trigger
     entity_id: automation.bleach_inject
-  - delay: >-
-      00:{{ [0,
-        [1440, (states('input_number.cycle') | int(0) * (1 - states('input_number.second_cycle') | int(0) / 100))] | min
-        - [0, states('input_number.muriatic_delay_effective') | float(0)] | max
-        - 25
-        - [0, states('input_number.bleach_delay_effective') | float(0)] | max
-      ] | max | int(0) }}:00
-  - entity_id: switch.pump
-    service: switch.turn_off
+  # Fin de cycle : même calcul qu'avant, mais confié à la carte (plus de delay + OFF).
+  - variables:
+      remaining_min: >-
+        {{ [0,
+          [1440, (states('input_number.cycle') | int(0) * (1 - states('input_number.second_cycle') | int(0) / 100))] | min
+          - [0, states('input_number.muriatic_delay_effective') | float(0)] | max
+          - 25
+          - [0, states('input_number.bleach_delay_effective') | float(0)] | max
+        ] | max | int(0) }}
+  - choose:
+    - conditions: "{{ remaining_min | int(0) > 0 }}"
+      sequence:
+      - service: waveshare_relay.run_for
+        data:
+          entity_id: switch.pump
+          minutes: "{{ remaining_min }}"
+    default:
+    - service: waveshare_relay.stop
+      data:
+        entity_id: switch.pump
+  # [WAIT-5] attend l'arrêt de la pompe avant de remettre à zéro un cycle forcé (>= 24 h)
+  - wait_template: "{{ is_state('switch.pump', 'off') }}"
+    timeout: "00:{{ remaining_min | int(0) + 5 }}:00"
+    continue_on_timeout: true
   - condition: numeric_state
     entity_id: input_number.cycle
     above: 1439
@@ -216,11 +241,10 @@ automation:
       {% set finished = start + (minutes * 60) %}
       {{ as_timestamp(now()) | float(0) >= finished }}
   action:
-  - entity_id: switch.pump
-    service: switch.turn_on
-  - delay: 00:{{ (states('input_number.cycle')|int * states('input_number.second_cycle')|int / 100)|int }}:00
-  - entity_id: switch.pump
-    service: switch.turn_off
+  - service: waveshare_relay.run_for
+    data:
+      entity_id: switch.pump
+      minutes: "{{ (states('input_number.cycle')|int * states('input_number.second_cycle')|int / 100)|int }}"
 
 # Démarre le robot à l'heure programmée (robot_cycle_start), durée = % du cycle avec robot
 - alias: cycle_turbo_start
@@ -237,13 +261,11 @@ automation:
   - condition: numeric_state
     entity_id: input_number.turbo
     above: 0
-  - entity_id: switch.turbo
-    service: switch.turn_off
-  - entity_id: switch.turbo
-    service: switch.turn_on
-  - delay: 00:{{ (states('input_number.cycle')|int * (1 - states('input_number.second_cycle')|int/100) * states('input_number.turbo')|int /100 )|int }}:00
-  - entity_id: switch.turbo
-    service: switch.turn_off
+  # run_for remplace toute marche en cours du robot ; arrêt par la carte.
+  - service: waveshare_relay.run_for
+    data:
+      entity_id: switch.turbo
+      minutes: "{{ (states('input_number.cycle')|int * (1 - states('input_number.second_cycle')|int/100) * states('input_number.turbo')|int /100 )|int }}"
 
 - alias: pump_start
   id: '1559049859754'
@@ -394,11 +416,15 @@ automation:
     above: 0
   condition: []
   action:
-  - service: switch.turn_on
-    entity_id: switch.pump
-  - delay: "{{ states('input_number.pump_on_for') | int(0) }}:{{ ((states('input_number.pump_on_for') | float(0) % 1) * 60) | int(0) }}:0"
-  - service: switch.turn_off
-    entity_id: switch.pump
+  # pump_on_for est en heures ; arrêt par la carte (bail renouvelé au-delà de 54 min).
+  - service: waveshare_relay.run_for
+    data:
+      entity_id: switch.pump
+      minutes: "{{ (states('input_number.pump_on_for') | float(0) * 60) | round(0) | int }}"
+  # [WAIT-6] attend la fin de la marche pour remettre le compteur à 0
+  - wait_template: "{{ is_state('switch.pump', 'off') }}"
+    timeout: "00:{{ (states('input_number.pump_on_for') | float(0) * 60) | round(0) | int + 5 }}:00"
+    continue_on_timeout: true
   - service: input_number.set_value
     data:
       entity_id: input_number.pump_on_for
