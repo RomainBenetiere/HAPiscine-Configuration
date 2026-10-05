@@ -527,6 +527,6 @@ views:
             name: CH8 (réserve)
       # Interface web du simulateur Simul-WS (adapter l'IP comme dans waveshare.yaml)
       - type: iframe
-        url: http://192.168.1.200:8080
+        url: http://192.168.0.21:8080
         aspect_ratio: 75%
 
