@@ -13,7 +13,7 @@
 # Sandbox : host/port pointent sur le simulateur Simul-WS (Modbus 5020, UI web 8080).
 # Carte réelle : IP d'usine 192.168.1.200, port 502.
 waveshare_relay:
-  host: 192.168.1.200          # IP de la carte ou de l'hôte Docker Simul-WS (à adapter)
+  host: 192.168.0.21          # IP de la carte ou de l'hôte Docker Simul-WS (à adapter)
   port: 5020                   # Simul-WS par défaut ; 502 sur la carte réelle
   slave: 1
   scan_interval: 5             # s, lecture des états (FC01)
