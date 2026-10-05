@@ -1,6 +1,7 @@
 title: Raspipool
 views:
   - badges:
+      - weather.forecast_maison
       - sensor.outdoor_temperature
       - sensor.e_fc
       - sensor.cycle_pool
@@ -65,6 +66,14 @@ views:
                     entity_id: sensor.ezo_orp
             type: glance
             show_state: true
+          - title: Mesure Manuelle (FC)
+            type: entities
+            entities:
+              - entity: input_number.manual_fc
+                name: Chlore libre mesuré (ppm)
+              - entity: input_datetime.manual_fc_date
+                name: Date dernière mesure
+            show_header_toggle: false
           - title: Fournitures
             type: horizontal-stack
             cards:
@@ -129,7 +138,7 @@ views:
                     action: call-service
                     service: switch.toggle
                     service_data:
-                      entity_id: switch.orp
+                      entity_id: switch.electrolyseur
                   tap_action:
                     action: navigate
                     navigation_path: /lovelace/2
@@ -199,7 +208,7 @@ views:
             entities:
               - entity: sensor.pump_state
                 name: État pompe
-              - entity: switch.orp
+              - entity: switch.electrolyseur
                 name: Électrolyseur
               - entity: switch.ph
                 name: Acide
@@ -217,7 +226,7 @@ views:
             entities:
               - entity: sensor.pump_state
                 name: État pompe
-              - entity: switch.orp
+              - entity: switch.electrolyseur
                 name: Électrolyseur
               - entity: switch.ph
                 name: Acide
@@ -278,7 +287,7 @@ views:
                   name: Durée de marche (prochaine)
                 - entity: sensor.duree_marche_cellule_effective
                   name: Temps de marche pris en compte (min)
-                - entity: switch.orp
+                - entity: switch.electrolyseur
                   name: Cellule (ON/OFF)
                   secondary_info: last-changed
                 - entity: input_boolean.lock_bleach

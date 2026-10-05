@@ -28,6 +28,20 @@ input_number:
     mode: box
     unit_of_measurement: 'ppm'
     icon: mdi:react
+  manual_fc:
+    name: "Mesure FC manuelle (ppm)"
+    min: 0
+    max: 15
+    step: 0.1
+    mode: box
+    unit_of_measurement: 'ppm'
+    icon: mdi:test-tube
+
+input_datetime:
+  manual_fc_date:
+    name: "Date saisie FC"
+    has_date: true
+    has_time: true
 
 
 automation:
@@ -88,4 +102,17 @@ automation:
   action:
     - service: automation.trigger
       entity_id: automation.bleach_set
+
+- alias: update_manual_fc_date
+  id: 'update_manual_fc_date_auto'
+  initial_state: true
+  trigger:
+    - platform: state
+      entity_id: input_number.manual_fc
+  action:
+    - service: input_datetime.set_datetime
+      target:
+        entity_id: input_datetime.manual_fc_date
+      data:
+        datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
 

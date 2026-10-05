@@ -14,7 +14,7 @@ sensor:
 # For I2C enter the hex device id
     name: ezo_hw_orp
     port: 0x62
-    offset: -20
+    offset: 0
     scan_interval: 60
 
 automation:
@@ -23,7 +23,7 @@ automation:
   initial_state: true
   trigger:
   - platform: state
-    entity_id: switch.orp
+    entity_id: switch.electrolyseur
     to: 'on'
   condition:
   - condition: state
@@ -31,7 +31,7 @@ automation:
     state: 'off'
   action:
   - service: switch.turn_off
-    entity_id: switch.orp
+    entity_id: switch.electrolyseur
 
 - alias: orp_bad
   id: '1559149493756'

@@ -22,6 +22,9 @@ logger:
 # Disable automation
 # automation: !include automations.yaml
 script: !include scripts.yaml
+
+mqtt_statestream: !include mqtt_statestream.yaml
+
 lovelace:
   resource_mode: yaml
   dashboards:

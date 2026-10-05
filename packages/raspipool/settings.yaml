@@ -54,7 +54,7 @@ input_number:
     min: 10
     max: 100
     step: 1
-    initial: 32
+    initial: 27
     unit_of_measurement: "mL/min"
     icon: mdi:pump
     mode: box
@@ -72,7 +72,7 @@ input_number:
     min: 50
     max: 2000
     step: 10
-    initial: 500
+    initial: 1600
     unit_of_measurement: "mL"
     icon: mdi:alert-octagon
     mode: box
@@ -81,7 +81,7 @@ input_number:
     min: 1
     max: 120
     step: 1
-    initial: 30
+    initial: 60
     unit_of_measurement: "min"
     icon: mdi:timer-alert
     mode: box
@@ -102,7 +102,7 @@ input_select:
       - Electrolyseur
       - Javel
       - Désactivé
-    initial: Electrolyseur
+    initial: Javel
 
 
 input_boolean:
@@ -184,7 +184,7 @@ automation:
   - service: input_number.set_value
     data:
       entity_id: input_number.javel_pump_flow
-      value: 32
+      value: 27
   - service: input_number.set_value
     data:
       entity_id: input_number.javel_concentration
@@ -192,11 +192,11 @@ automation:
   - service: input_number.set_value
     data:
       entity_id: input_number.javel_max_daily_vol
-      value: 500
+      value: 1600
   - service: input_number.set_value
     data:
       entity_id: input_number.javel_max_daily_time
-      value: 30
+      value: 60
 
 counter:
   minutes_fonctionnement:

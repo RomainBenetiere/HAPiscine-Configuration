@@ -19,8 +19,10 @@ recorder:
       - sensor.openweathermap_condition
       - sensor.openweathermap_temperature
       - switch.ph
-      - switch.orp
+      - switch.electrolyseur
       - sensor.e_fc
+      - input_number.manual_fc
+      - input_datetime.manual_fc_date
       - input_number.cycle
       - sensor.cycle_pool
       - input_number.bleach_speed

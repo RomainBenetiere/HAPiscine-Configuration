@@ -9,7 +9,7 @@ input_boolean:
   sim_ph_pump:
     name: Sim pompe pH
   sim_orp_pump:
-    name: Sim pompe ORP
+    name: Sim électrolyseur
   sim_flowd:
     name: Sim débit
   sim_javel_pump:
@@ -234,13 +234,13 @@ template:
               - service: switch.turn_off
                 target:
                   entity_id: switch.ph_hw
-      - name: "orp"
-        unique_id: raspipool_switch_orp
+      - name: "Electrolyseur"
+        unique_id: raspipool_switch_electrolyseur
         state: >-
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ is_state('input_boolean.sim_orp_pump', 'on') }}
           {% else %}
-            {{ is_state('switch.orp_hw', 'on') }}
+            {{ is_state('switch.electrolyseur_hw', 'on') }}
           {% endif %}
         turn_on:
           - choose:
@@ -255,7 +255,7 @@ template:
             default:
               - service: switch.turn_on
                 target:
-                  entity_id: switch.orp_hw
+                  entity_id: switch.electrolyseur_hw
         turn_off:
           - choose:
               - conditions:
@@ -269,7 +269,7 @@ template:
             default:
               - service: switch.turn_off
                 target:
-                  entity_id: switch.orp_hw
+                  entity_id: switch.electrolyseur_hw
       - name: "Javel"
         unique_id: raspipool_switch_javel
         state: >-

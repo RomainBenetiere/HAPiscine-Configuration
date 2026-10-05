@@ -1,0 +1,11 @@
+automation:
+  - alias: "MQTT : Recevoir les commandes Switch depuis HA Principal"
+    id: "mqtt_receive_switch_commands"
+    mode: queued
+    trigger:
+      - platform: mqtt
+        topic: "ha/piscine/switch/+/set"
+    action:
+      - service: "switch.turn_{{ trigger.payload | lower }}"
+        target:
+          entity_id: "switch.{{ trigger.topic.split('/')[3] }}"

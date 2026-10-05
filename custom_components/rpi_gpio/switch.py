@@ -112,11 +112,11 @@ class RPiGPIOSwitch(SwitchEntity):
         if HAS_GPIO:
             write_output(self._port, 0 if self._invert_logic else 1)
         self._state = True
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()
 
     def turn_off(self, **kwargs):
         """Turn the device off."""
         if HAS_GPIO:
             write_output(self._port, 1 if self._invert_logic else 0)
         self._state = False
-        self.async_write_ha_state()
+        self.schedule_update_ha_state()

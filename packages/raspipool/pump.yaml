@@ -33,7 +33,7 @@ template:
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ states('input_number.sim_power_production') | float(0) }}
           {% else %}
-            {{ states('sensor.envoy_122301074544_production_d_electricite_actuelle') | float(0) }}
+            {{ states('sensor.envoy_122301074544_production_d_electricite_actuelle') | float(0) * 1000 }}
           {% endif %}
         unit_of_measurement: "W"
         device_class: power
@@ -43,7 +43,7 @@ template:
           {% if is_state('input_boolean.simulation_mode', 'on') %}
             {{ states('input_number.sim_power_consumption') | float(0) }}
           {% else %}
-            {{ states('sensor.envoy_122301074544_consommation_electrique_actuelle') | float(0) }}
+            {{ states('sensor.envoy_122301074544_consommation_electrique_actuelle') | float(0) * 1000 }}
           {% endif %}
         unit_of_measurement: "W"
         device_class: power
@@ -54,8 +54,8 @@ template:
             {{ states('input_number.sim_power_consumption') | float(0) -
                states('input_number.sim_power_production') | float(0) }}
           {% else %}
-            {{ states('sensor.envoy_122301074544_consommation_electrique_actuelle') | float(0) -
-               states('sensor.envoy_122301074544_production_d_electricite_actuelle') | float(0) }}
+            {{ (states('sensor.envoy_122301074544_consommation_electrique_actuelle') | float(0) -
+               states('sensor.envoy_122301074544_production_d_electricite_actuelle') | float(0)) * 1000 }}
           {% endif %}
         unit_of_measurement: "W"
         device_class: power
@@ -167,13 +167,13 @@ automation:
     service: automation.turn_on
   - entity_id: automation.orp_bad
     service: automation.turn_on
-  - delay: 00:10:00
+  - delay: 00:15:00
   - service: automation.trigger
     entity_id: automation.muriatic_set
   - delay: 00:00:10
   - service: automation.trigger
     entity_id: automation.muriatic_inject
-  - delay: 00:05:00
+  - delay: 00:10:00
   - service: automation.trigger
     entity_id: automation.bleach_set
   - delay: 00:00:10
@@ -183,7 +183,7 @@ automation:
       00:{{ [0,
         [1440, (states('input_number.cycle') | int(0) * (1 - states('input_number.second_cycle') | int(0) / 100))] | min
         - [0, states('input_number.muriatic_delay_effective') | float(0)] | max
-        - 15
+        - 25
         - [0, states('input_number.bleach_delay_effective') | float(0)] | max
       ] | max | int(0) }}:00
   - entity_id: switch.pump
@@ -317,7 +317,7 @@ automation:
   - service: switch.turn_off
     entity_id: switch.ph
   - service: switch.turn_off
-    entity_id: switch.orp
+    entity_id: switch.electrolyseur
   - service: switch.turn_off
     entity_id: switch.javel
 
