@@ -525,8 +525,8 @@ views:
             name: CH7 (réserve)
           - entity: switch.relais_ch8
             name: CH8 (réserve)
-      # Interface web du simulateur Simul-WS (adapter l'IP comme dans waveshare.yaml)
+      # Interface web de la carte Waveshare physique
       - type: iframe
-        url: http://192.168.0.21:8080
+        url: http://192.168.0.145
         aspect_ratio: 75%
 
