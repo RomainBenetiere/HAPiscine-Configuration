@@ -68,20 +68,36 @@ class WaveshareClient:
                     self._tid = (self._tid + 1) & 0xFFFF
                     self._writer.write(build_adu(self._tid, self.unit_id, pdu))
                     await self._writer.drain()
-                    header = await asyncio.wait_for(self._reader.readexactly(7), self.timeout)
-                    tid, _proto, length, _unit = struct.unpack(">HHHB", header)
-                    body = await asyncio.wait_for(
-                        self._reader.readexactly(length - 1), self.timeout
-                    )
-                    if tid != self._tid:
-                        raise ModbusError(f"transaction id mismatch ({tid} != {self._tid})")
-                    return check_response(pdu, body)
+                    return await asyncio.wait_for(self._read_reply(pdu), self.timeout)
                 except (OSError, asyncio.TimeoutError, asyncio.IncompleteReadError) as err:
                     last_error = err
                     await self._reset()
             raise ModbusError(
                 f"Waveshare {self.host}:{self.port} unreachable: {last_error!r}"
             ) from last_error
+
+    async def _read_reply(self, pdu: bytes) -> bytes:
+        """Read frames until the one matching our transaction id.
+
+        The board's TCP->RTU gateway may hand us a reply meant for another
+        client (several Modbus masters on the same board): such frames are
+        skipped. A header that is not Modbus TCP means the stream is out of
+        sync: the connection is reset by the caller.
+        """
+        assert self._reader is not None
+        while True:
+            header = await self._reader.readexactly(7)
+            tid, proto, length, _unit = struct.unpack(">HHHB", header)
+            if proto != 0 or not 2 <= length <= 254:
+                raise OSError(f"desynchronised Modbus stream (header {header.hex()})")
+            body = await self._reader.readexactly(length - 1)
+            if tid == self._tid:
+                return check_response(pdu, body)
+            _LOGGER.warning(
+                "Ignoring Modbus reply with foreign transaction id %s (expected %s): "
+                "another client is probably talking to the board",
+                tid, self._tid,
+            )
 
     # ------------------------------------------------------------------ #
     async def read_relays(self) -> List[bool]:

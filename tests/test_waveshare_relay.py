@@ -50,6 +50,7 @@ class FakeWaveshare:
         self.blackhole = False
         self._writers: set = set()
         self.requests: list = []
+        self.inject_foreign = False  # send another client's reply before ours
         self.server = None
         self.port = 0
 
@@ -87,6 +88,10 @@ class FakeWaveshare:
                     break
                 self.requests.append(pdu)
                 resp = self._process(pdu)
+                if self.inject_foreign:
+                    foreign = bytes([0x01, 0x01, 0xFF])
+                    writer.write(struct.pack(">HHHB", (tid + 4242) & 0xFFFF, 0,
+                                             len(foreign) + 1, unit) + foreign)
                 writer.write(struct.pack(">HHHB", tid, 0, len(resp) + 1, unit) + resp)
                 await writer.drain()
         except (asyncio.IncompleteReadError, ConnectionError):
@@ -284,6 +289,15 @@ class SchedulerTest(unittest.IsolatedAsyncioTestCase):
         self.assertIsNone(self.sched.run(2))
         await asyncio.sleep(1.2)
         self.assertFalse(self.board.relays[1], "lease renewal must not turn it back ON")
+
+    async def test_foreign_transaction_ids_are_skipped(self) -> None:
+        self.board.inject_foreign = True  # e.g. a 2nd Modbus master on the board
+        self.board.relays[2] = True
+        states = await self.sched.refresh()
+        self.assertTrue(states[2])
+        self.assertFalse(states[0], "the foreign 0xFF bitmap must not be used")
+        await self.sched.run_for(1, 1.0)
+        self.assertTrue(self.board.relays[0])
 
     async def test_refresh_reads_states(self) -> None:
         self.board.relays[4] = True
