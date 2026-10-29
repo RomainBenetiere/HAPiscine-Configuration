@@ -206,6 +206,13 @@ class RelayScheduler:
         try:
             while not final:
                 await asyncio.sleep(sleep_s)
+                if loop.time() >= run.armed_until:
+                    _LOGGER.error(
+                        "CH%s lease expired during communication loss, run aborted",
+                        channel,
+                    )
+                    self._set_state(channel, False)
+                    return
                 try:
                     sleep_s, final = await self._arm(channel, run)
                 except ModbusError as err:

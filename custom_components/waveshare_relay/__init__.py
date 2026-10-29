@@ -118,6 +118,11 @@ RUN_FOR_SCHEMA = vol.All(
 STOP_SCHEMA = vol.Schema({vol.Required("entity_id"): cv.entity_ids})
 
 
+#: Number of consecutive poll failures tolerated before marking entities
+#: unavailable (relays are held by their hardware timer/lease in the meantime).
+MAX_POLL_FAILURES = 5
+
+
 class WaveshareHub:
     """Glue between Home Assistant and the HA-agnostic scheduler."""
 
@@ -141,6 +146,7 @@ class WaveshareHub:
             lease_s=conf[CONF_LEASE] * 60,
             on_change=self._on_change,
         )
+        self._poll_failures = 0
         self.coordinator = DataUpdateCoordinator(
             hass,
             _LOGGER,
@@ -153,8 +159,22 @@ class WaveshareHub:
 
     async def _async_poll(self) -> list[bool]:
         try:
-            return await self.scheduler.refresh()
+            states = await self.scheduler.refresh()
+            self._poll_failures = 0
+            return states
         except ModbusError as err:
+            self._poll_failures += 1
+            if (
+                self.coordinator.data is not None
+                and self._poll_failures < MAX_POLL_FAILURES
+            ):
+                _LOGGER.debug(
+                    "Transient Waveshare poll failure (%s/%s), keeping last state: %s",
+                    self._poll_failures,
+                    MAX_POLL_FAILURES,
+                    err,
+                )
+                return list(self.scheduler.states)
             raise UpdateFailed(str(err)) from err
 
     @callback

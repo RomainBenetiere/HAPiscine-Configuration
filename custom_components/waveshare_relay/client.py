@@ -27,11 +27,19 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class WaveshareClient:
-    def __init__(self, host: str, port: int, unit_id: int = 1, timeout: float = 3.0) -> None:
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        unit_id: int = 1,
+        timeout: float = 3.0,
+        retry_delay: float = 0.05,
+    ) -> None:
         self.host = host
         self.port = port
         self.unit_id = unit_id
         self.timeout = timeout
+        self.retry_delay = retry_delay
         self._reader: Optional[asyncio.StreamReader] = None
         self._writer: Optional[asyncio.StreamWriter] = None
         self._lock = asyncio.Lock()
@@ -60,7 +68,7 @@ class WaveshareClient:
     async def request(self, pdu: bytes) -> bytes:
         async with self._lock:
             last_error: Optional[Exception] = None
-            for _attempt in range(2):
+            for attempt in range(2):
                 try:
                     if self._writer is None:
                         await self._connect()
@@ -72,6 +80,8 @@ class WaveshareClient:
                 except (OSError, asyncio.TimeoutError, asyncio.IncompleteReadError) as err:
                     last_error = err
                     await self._reset()
+                    if attempt == 0 and self.retry_delay > 0:
+                        await asyncio.sleep(self.retry_delay)
             raise ModbusError(
                 f"Waveshare {self.host}:{self.port} unreachable: {last_error!r}"
             ) from last_error
